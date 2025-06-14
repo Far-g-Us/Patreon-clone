@@ -1,0 +1,17 @@
+{% load static %}
+
+<header>
+    <div class="tab-container">
+      <div class="tab-icon"><a class="home-icon-size" href="#"><img class="home-icon" src="{% static 'img/home-ico.svg' %}"></a></div>
+      <div class="tab-search">
+        <div class="input-group mb-3">
+          <button class="btn btn-outline-secondary" type="button" id="button-addon1"><span class="search-icon"></span></button>
+          <input type="text" class="form-control" placeholder="" aria-label="Example text with button addon" aria-describedby="button-addon1">
+        </div>
+      </div>
+      <div class="login-tab">
+        <a class="btn login-btn" href="/login.html">Войти</a>
+      </div>
+      <div class="about"></div>
+    </div>
+</header>

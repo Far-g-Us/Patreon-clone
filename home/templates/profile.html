@@ -1,0 +1,201 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<div class="page-wrapper">
+  <div class="banner">
+    <a class="img-trim"><img src="{% static 'img/banner.jpg' %}"></a>
+  </div>
+  <div class="logo-column">
+    <div class="logo-properties-column">
+      <a class="logo-img-trim"><img src="{% static 'img/ogo.jpg' %}"></a>
+    </div>
+  </div>
+  <div class="head-column">
+    <div class="name-profile" id="profile-name">Имя Профиля</div>
+    <div class="description-profile" id="profile-description">Описание профиля бебе баба ууу ооо</div>
+    <div class="sub-count" id="sub-count">вы лох у вас: 0</div>
+  </div>
+  <div class="tabs-container">
+    <!-- <div class="tab-line"></div> -->
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+      <li class="nav-item">
+        <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button"
+          role="tab" aria-controls="home-tab-pane" aria-selected="true">Главная страница</button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-tab-pane" type="button"
+          role="tab" aria-controls="profile-tab-pane" aria-selected="false">Магазин</button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact-tab-pane" type="button"
+          role="tab" aria-controls="contact-tab-pane" aria-selected="false">О создателе</button>
+      </li>
+    </ul>
+  </div>
+  <div class="tab-content" id="myTabContent">
+    <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
+      Недавние публикации от <span>UserID</span>
+      <div class="filter-tab-sections">
+        <div class="btn-group">
+          <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+            data-bs-auto-close="true" aria-expanded="false">
+            Тип публикации
+          </button>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#"><span class="icon1"></span>Изображение</a></li>
+            <li><a class="dropdown-item" href="#"><span class="icon2"></span>Опрос</a></li>
+            <li><a class="dropdown-item" href="#"><span class="icon3"></span>Текст</a></li>
+            <li><a class="dropdown-item" href="#"><span class="icon4"></span>Видео</a></li>
+          </ul>
+        </div>
+        <div class="btn-group">
+          <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+            data-bs-auto-close="true" aria-expanded="false">
+            Вариант2
+          </button>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#">Menu item</a></li>
+            <li><a class="dropdown-item" href="#">Menu item</a></li>
+            <li><a class="dropdown-item" href="#">Menu item</a></li>
+          </ul>
+        </div>
+        <div class="btn-group">
+          <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+            data-bs-auto-close="true" aria-expanded="false">
+            Дата
+          </button>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#">Menu item</a></li>
+            <li><a class="dropdown-item" href="#">Menu item</a></li>
+            <li><a class="dropdown-item" href="#">Menu item</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="post-column">
+        <div class="post-example">
+          <div class="post-divider">
+            <div class="photo-placehold-post">
+              <a class="post-img-trim"><img src="{% static 'img/postpic.jpg' %}"></a>
+            </div>
+            <div class="text-placehold-post">
+              <div class="text-placehold">
+                <div class="name-post">Название поста
+                  <div class="date-post">Дата поста</div>
+                </div>
+                <div class="description-post">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Fugit nisi
+                  pariatur impedit qui obcaecati necessitatibus. Facilis reprehenderit officia tenetur eligendi soluta
+                  quia quod explicabo, optio, atque perferendis animi consequuntur ab.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="post-example">
+          <div class="post-divider">
+            <div class="photo-placehold-post"></div>
+            <div class="text-placehold-post">
+              <div class="text-placehold">
+                <div class="name-post">Название поста
+                  <div class="date-post">Дата поста</div>
+                </div>
+                <div class="description-post">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Fugit nisi
+                  pariatur impedit qui obcaecati necessitatibus. Facilis reprehenderit officia tenetur eligendi soluta
+                  quia quod explicabo, optio, atque perferendis animi consequuntur ab.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="post-example">
+          <div class="post-divider">
+            <div class="photo-placehold-post"></div>
+            <div class="text-placehold-post">
+              <div class="text-placehold">
+                <div class="name-post">Название поста
+                  <div class="date-post">Дата поста</div>
+                </div>
+                <div class="description-post">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Fugit nisi
+                  pariatur impedit qui obcaecati necessitatibus. Facilis reprehenderit officia tenetur eligendi soluta
+                  quia quod explicabo, optio, atque perferendis animi consequuntur ab.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
+      <div class="shop-column">
+        <div class="shop-search">
+          <div class="input-group">
+            <button class="btn btn-outline-secondary" type="button" id="button-addon1"><span
+                class="search-icon"></span></button>
+            <input type="text" class="form-control" placeholder="" aria-label="Example text with button addon"
+              aria-describedby="button-addon1">
+          </div>
+        </div>
+        <div class="shop-items">
+          <div class="shop-item-example">
+            <div class="shop-divider">
+              <div class="shop-item-pic">
+                <a class="post-img-trim"><img src="{% static 'img/shop-pic1.jpg' %}"></a>
+              </div>
+              <div class="shop-item-text">
+                <div class="shop-item-divider">
+                  <div class="shop-item-descr">Описание товара</div>
+                  <div class="item-price">цена товара</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="shop-item-example">
+            <div class="shop-divider">
+              <div class="shop-item-pic">
+                <a class="post-img-trim"><img src="{% static 'img/shop-pic2.jpg' %}"></a>
+              </div>
+              <div class="shop-item-text">
+                <div class="shop-item-divider">
+                  <div class="shop-item-descr">Описание товара</div>
+                  <div class="item-price">цена товара</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="shop-item-example">
+            <div class="shop-divider">
+              <div class="shop-item-pic">
+                <a class="post-img-trim"><img src="{% static 'img/shop-pic3.jpg' %}"></a>
+              </div>
+              <div class="shop-item-text">
+                <div class="shop-item-divider">
+                  <div class="shop-item-descr">Описание товара</div>
+                  <div class="item-price">цена товара</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="shop-item-example">
+            <div class="shop-divider">
+              <div class="shop-item-pic">
+                <a class="post-img-trim"><img src="{% static 'img/shop-pic4.jpg' %}"></a>
+              </div>
+              <div class="shop-item-text">
+                <div class="shop-item-divider">
+                  <div class="shop-item-descr">Описание товара</div>
+                  <div class="item-price">цена товара</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="tab-pane fade" id="contact-tab-pane" role="tabpanel" aria-labelledby="contact-tab" tabindex="0">
+      <div class="profile-column">
+        <div class="profile-full-descr">
+          <div class="profile-info"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
