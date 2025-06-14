@@ -4,18 +4,36 @@
 
 <div class="page-wrapper">
   <div class="banner">
-    <a class="img-trim"><img src="{% static 'img/banner.jpg' %}"></a>
+    <a class="img-trim"><img src="{{ creator.banner.url }}" alt="{{ creator.user.username }}"></a>
   </div>
   <div class="logo-column">
     <div class="logo-properties-column">
-      <a class="logo-img-trim"><img src="{% static 'img/ogo.jpg' %}"></a>
+      <a class="logo-img-trim"><img src="{{ creator.avatar.url }}" alt="{{ creator.user.username }}"></a>
     </div>
   </div>
   <div class="head-column">
-    <div class="name-profile" id="profile-name">Имя Профиля</div>
-    <div class="description-profile" id="profile-description">Описание профиля бебе баба ууу ооо</div>
+    <div class="name-profile" id="profile-name">{{ creator.user.username }}</div>
+    <div class="description-profile" id="profile-description">{{ creator.bio }}</div>
     <div class="sub-count" id="sub-count">вы лох у вас: 0</div>
   </div>
+
+  <div class="tiers">
+    {% for tier in creator.tiers.all %}
+    <div class="tier-card">
+      <h3>{{ tier.name }} - ${{ tier.price }}/мес</h3>
+      <p>{{ tier.description }}</p>
+      <button>Подписаться</button>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="content-list">
+    {% for content in creator.content_set.all %}
+      {% include "content_preview.html" with item=content %}
+    {% endfor %}
+  </div>
+
+
   <div class="tabs-container">
     <!-- <div class="tab-line"></div> -->
     <ul class="nav nav-tabs" id="myTab" role="tablist">

@@ -129,7 +129,12 @@ STATICFILES_DIRS = [
 ]
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+MAX_FILE_SIZE = 1024 * 1024 * 500  # 500 MB
+
+
+AUTH_USER_MODEL = 'aka-Nexus-mods.CustomUser'
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+#DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
