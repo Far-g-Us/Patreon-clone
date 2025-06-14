@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
@@ -20,13 +21,22 @@ class CustomUser(AbstractUser):
         return self.role == 'creator'
 
 class Tier(models.Model):
-    creator = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='tiers')
+    creator = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        limit_choices_to={'role': 'creator'},  # Важно: только создатели!
+        related_name='tiers'
+    )
     name = models.CharField(max_length=100)
     price = models.DecimalField(max_digits=6, decimal_places=2)
     description = models.TextField()
 
 class Content(models.Model):
-    creator = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    creator = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        limit_choices_to={'role': 'creator'}  # Важно: только создатели!
+    )
     tier = models.ForeignKey(Tier, on_delete=models.SET_NULL, null=True, blank=True)
     title = models.CharField(max_length=200)
     description = models.TextField()

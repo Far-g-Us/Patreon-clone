@@ -15,4 +15,13 @@ class UserRegisterForm(UserCreationForm):
 class CreatorProfileForm(forms.ModelForm):
     class Meta:
         model = CustomUser
-        fields = ['bio', 'avatar', 'website', 'social_media']
+        fields = ['avatar', 'bio', 'website', 'social_media']
+        labels = {
+            'avatar': 'Аватар профиля',
+            'bio': 'Биография',
+            'website': 'Веб-сайт',
+            'social_media': 'Социальные сети'
+        }
+        widgets = {
+            'bio': forms.Textarea(attrs={'rows': 4}),
+        }

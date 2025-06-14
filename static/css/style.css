@@ -50,7 +50,7 @@ a.home-icon-size{
     background: #474747;
 }
 span.search-icon {
-    background: url(img/search-ico.svg) no-repeat;
+    background: url("img/search-ico.svg") no-repeat;
     float: left;
     width: 15px;
     height: 15px;

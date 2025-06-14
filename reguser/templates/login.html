@@ -12,16 +12,34 @@
     <div class="login-box">
       <div class="login-area">
         <div class="login-welcome">Вход в аккаунт</div>
+
+        <!-- Сообщения об ошибках -->
+        {% if form.errors %}
+            <div class="alert alert-danger">
+                Неверное имя пользователя или пароль. Попробуйте снова.
+            </div>
+        {% endif %}
+
         <div class="login-form">
-          <form method="post">
-              {% csrf_token %}
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ next }}">
 
-              {{ form.username.label_tag }} {{ form.username }}
-              {{ form.password.label_tag }} {{ form.password }}
+                <div class="form-group">
+                    <label for="id_username">Имя пользователя</label>
+                    <input type="text" name="username" id="id_username"
+                           class="form-control" required autofocus>
+                </div>
 
-              <button type="submit" class="btn btn-primary">Войти</button>
-              <a href="{% url 'password_reset' %}" class="btn btn-link">Забыли пароль?</a>
-          </form>
+                <div class="form-group">
+                    <label for="id_password">Пароль</label>
+                    <input type="password" name="password" id="id_password"
+                           class="form-control" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block">Войти</button>
+                <a href="{% url 'password_reset' %}" class="btn btn-link btn-block">Забыли пароль?</a>
+            </form>
           <hr>
           <p>Ещё нет аккаунта? <a href="{% url 'register' %}">Зарегистрироваться</a></p>
 <!--          <form>-->

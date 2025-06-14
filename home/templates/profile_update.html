@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div class="container mt-5">
+    <h2>Обновление профиля создателя</h2>
+
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="mb-3">
+            <label class="form-label">Текущий аватар:</label>
+            {% if user.avatar %}
+                <img src="{{ user.avatar.url }}" alt="Avatar" class="img-thumbnail" width="150">
+            {% else %}
+                <p>Аватар не установлен</p>
+            {% endif %}
+        </div>
+
+        {{ form.as_p }}
+
+        <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+        <a href="{% url 'home' %}" class="btn btn-secondary">Отмена</a>
+    </form>
+</div>
+{% endblock content %}
