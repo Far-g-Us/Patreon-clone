@@ -1,10 +1,23 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
-from django.shortcuts import render, redirect
+from django.core.exceptions import PermissionDenied
+from django.core.paginator import Paginator
+from django.http import Http404
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout
-from .forms import UserRegisterForm, CreatorProfileForm
+from django.views.generic import ListView
+from home.models import CustomUser, Content
+from .forms import UserRegisterForm, CreatorProfileForm, UserSettingsForm
 
+
+# class ProfileView(ListView):
+#     model = Content
+#     fields = '__all__'
+#     template_name = 'creator_profile.html'
+#
+#     def get_queryset(self):
+#         return Content.objects.all()
 
 def custom_login(request):
     if request.user.is_authenticated:
@@ -33,7 +46,7 @@ def register(request):
             user = form.save()
 
             # Если пользователь регистрируется как создатель
-            if user.is_creator():
+            if user.role == 'creator':
                 profile_form = CreatorProfileForm(request.POST, request.FILES, instance=user)
                 if profile_form.is_valid():
                     profile_form.save()
@@ -51,8 +64,28 @@ def custom_logout(request):
     return redirect('home')
 
 
+def creator_profile(request, user_id):
+    creator = get_object_or_404(
+        CustomUser.objects.select_related('creator_profile'),
+        id=user_id,
+        role='creator'
+    )
+    # Проверяем, является ли пользователь создателем
+    # if not creator.is_creator:
+    #     raise Http404("Страница не найдена")
+
+    contents = Content.objects.filter(creator=creator).prefetch_related('tags')
+
+    return render(request, 'creator_profile.html', {
+        'creator': creator,
+        'contents': contents
+    })
+
 @login_required
-def creator_profile_update(request):
+def creator_profile_update(request, user_id):
+    if request.user.id != user_id or not request.user.is_creator:
+        raise PermissionDenied
+
     # Проверяем, является ли пользователь создателем
     if not request.user.is_creator():
         messages.warning(request, 'Эта страница доступна только создателям контента')
@@ -63,8 +96,42 @@ def creator_profile_update(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'Профиль успешно обновлен!')
-            return redirect('creator_profile')
+            return redirect('profile')
     else:
         form = CreatorProfileForm(instance=request.user)
 
-    return render(request, 'profile_update.html', {'form': form})
+    return redirect('creator_profile', user_id=request.user.id)
+
+@login_required
+def user_profile(request):
+    # Для создателей перенаправляем на их профиль
+    if request.user.is_creator:
+        return redirect('creator_profile', user_id=request.user.id)
+
+    return render(request, 'user_profile.html', {
+        'user': request.user,
+        'subscriptions': request.user.subscriptions.all()
+    })
+
+@login_required
+def user_settings(request):
+    if request.method == 'POST':
+        form = UserSettingsForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Настройки сохранены!')
+            return redirect('user_settings')
+    else:
+        form = UserSettingsForm(instance=request.user)
+
+    return render(request, 'settings.html', {'form': form})
+
+
+def content_list(request):
+    content_list = Content.objects.filter(is_public=True).order_by('-created_at')
+    paginator = Paginator(content_list, 10)  # 10 элементов на страницу
+
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'list.html', {'page_obj': page_obj})

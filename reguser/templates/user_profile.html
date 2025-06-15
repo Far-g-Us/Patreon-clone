@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div class="container mt-5">
+    <h2>Профиль пользователя: {{ user.username }}</h2>
+    <p>Email: {{ user.email|default:"Не указан" }}</p>
+
+    <h3>Ваши подписки</h3>
+    {% if user.subscriptions.all %}
+        <ul>
+        {% for subscription in user.subscriptions.all %}
+            <li>{{ subscription.tier.name }} - ${{ subscription.tier.price }}/мес</li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>У вас нет активных подписок</p>
+    {% endif %}
+</div>
+{% endblock content %}

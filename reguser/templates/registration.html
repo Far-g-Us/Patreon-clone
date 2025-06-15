@@ -16,10 +16,22 @@
           <form method="post" enctype="multipart/form-data">
               {% csrf_token %}
 
-              {{ form.username.label_tag }} {{ form.username }}
-              {{ form.email.label_tag }} {{ form.email }}
-              {{ form.password1.label_tag }} {{ form.password1 }}
-              {{ form.password2.label_tag }} {{ form.password2 }}
+              <div>
+                <label for="id_username" class="form-label">Username</label>
+                {{ form.username }}
+              </div>
+              <div>
+                <label for="exampleInputEmail1" class="form-label">Email (необязательно)</label>
+                {{ form.email }}
+              </div>
+              <div>
+                  <label for="exampleInputPass1" class="form-label">Password</label>
+                  {{ form.password1 }}
+              </div>
+              <div>
+                  <label for="exampleInputPass2" class="form-label">Confirm password</label>
+                  {{ form.password2 }}
+              </div>
 
               <div class="role-selection">
                   <h3>Выберите тип аккаунта:</h3>

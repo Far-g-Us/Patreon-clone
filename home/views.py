@@ -1,17 +1,21 @@
-from django.shortcuts import get_object_or_404
+from django.core.exceptions import PermissionDenied
+from django.shortcuts import get_object_or_404, render
 from django.views.generic import DetailView, ListView, CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.decorators.cache import cache_page
 from .mixins import CreatorRequiredMixin, UserRequiredMixin
-from .models import Content, Subscription
+from .models import Content, Subscription, CustomUser
 
 
-class IndexView(ListView):
-    model = Content
-    fields = '__all__'
-    template_name = 'index.html'
+@cache_page(60 * 15)
+def home(request):
+    featured_creators = CustomUser.objects.filter(
+        is_creator=True
+    ).order_by('-date_joined')[:5]
 
-    def get_queryset(self):
-        return Content.objects.all()
+    return render(request, 'index.html', {
+        'featured_creators': featured_creators
+    })
 
 class ContentDetailView(LoginRequiredMixin, DetailView):
     model = Content
@@ -36,7 +40,10 @@ from django.http import FileResponse
 
 def download_content(request, pk):
     content = get_object_or_404(Content, pk=pk)
-    # Проверка прав доступа (аналогичная проверка)
+    # Проверка прав доступа
+    if not content.is_public and not request.user.subscriptions.filter(tier=content.tier).exists():
+        raise PermissionDenied("У вас нет доступа к этому файлу")
+
     return FileResponse(content.file.open(), as_attachment=True)
 
 

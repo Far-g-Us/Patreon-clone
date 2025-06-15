@@ -4,15 +4,18 @@ from home.models import CustomUser
 
 
 class UserRegisterForm(UserCreationForm):
-    email = forms.EmailField(required=True)
+    email = forms.EmailField(required=False, help_text="Необязательно")
     role = forms.ChoiceField(choices=CustomUser.ROLE_CHOICES, widget=forms.RadioSelect)
 
     class Meta:
         model = CustomUser
-        fields = ['username', 'email', 'password1', 'password2', 'role']
+        fields = ['username', 'password1', 'password2', 'role']
 
+    def clean_email(self):
+        return self.cleaned_data.get('email', '')
 
 class CreatorProfileForm(forms.ModelForm):
+    banner = forms.ImageField(required=False, help_text="Необязательно")
     class Meta:
         model = CustomUser
         fields = ['avatar', 'bio', 'website', 'social_media']
@@ -25,3 +28,8 @@ class CreatorProfileForm(forms.ModelForm):
         widgets = {
             'bio': forms.Textarea(attrs={'rows': 4}),
         }
+
+class UserSettingsForm(forms.ModelForm):
+    class Meta:
+        model = CustomUser
+        fields = ['email', 'first_name', 'last_name']

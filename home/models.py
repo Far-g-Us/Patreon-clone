@@ -1,6 +1,8 @@
 from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.urls import reverse
+
 
 class CustomUser(AbstractUser):
     ROLE_CHOICES = (
@@ -8,17 +10,28 @@ class CustomUser(AbstractUser):
         ('creator', 'Content Creator'),
     )
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='user')
+
+    first_name = models.CharField(max_length=30, blank=True, null=True)
+    last_name = models.CharField(max_length=150, blank=True, null=True)
+    email = models.EmailField(blank=True, null=True)
+    ###
     bio = models.TextField(blank=True, null=True)
-    avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)
-    banner = models.ImageField(upload_to='banner/', blank=True, null=True)
+    avatar = models.ImageField(upload_to='avatars/', blank=True, null=True, default='img/pic.png')
+    banner = models.ImageField(upload_to='banner/', blank=True, null=True, default='img/banner.jpg')
     created_at = models.DateTimeField(auto_now_add=True)
 
     # Для создателей
     website = models.URLField(blank=True, null=True)
     social_media = models.CharField(max_length=255, blank=True, null=True)
 
-    def is_creator(self):
+    @property
+    def is_creator(self) -> bool:
         return self.role == 'creator'
+
+    def get_absolute_url(self):
+        if self.is_creator:
+            return reverse('profile', kwargs={'user_id': self.id})
+        return reverse('home')
 
 class Tier(models.Model):
     creator = models.ForeignKey(

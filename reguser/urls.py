@@ -6,6 +6,7 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     path('login/', views.custom_login, name='login'),
     path('logout/', views.custom_logout, name='logout'),
+
     path('password_reset/',
          auth_views.PasswordResetView.as_view(
              template_name='password_reset_form.html',
@@ -30,7 +31,11 @@ urlpatterns = [
              template_name='registration/password_reset_complete.html'
          ),
          name='password_reset_complete'),
+    path('settings/', views.user_settings, name='user_settings'),
+
+    # Для обычного пользователя
+    path('profile/', views.user_profile, name='user_profile'),
 
     # Для создателей
-    path('creator/profile/', views.creator_profile_update, name='creator_profile'),
+    path('creator/<int:user_id>/', views.creator_profile, name='creator_profile'),
 ]
