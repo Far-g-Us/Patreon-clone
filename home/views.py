@@ -8,14 +8,6 @@ from .models import Content, Subscription
 class IndexView(ListView):
     model = Content
     fields = '__all__'
-    template_name = 'profile.html'
-
-    def get_queryset(self):
-        return Content.objects.all()
-
-class ProfileView(ListView):
-    model = Content
-    fields = '__all__'
     template_name = 'index.html'
 
     def get_queryset(self):
