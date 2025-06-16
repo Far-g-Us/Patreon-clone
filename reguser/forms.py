@@ -25,13 +25,42 @@ class UserRegisterForm(UserCreationForm):
             user.save()
         return user
 
-class CreatorProfileForm(forms.ModelForm):
-    banner = forms.ImageField(required=False, help_text="Необязательно")
+# class CreatorProfileForm(forms.ModelForm):
+#     banner = forms.ImageField(required=False, help_text="Необязательно")
+#     class Meta:
+#         model = CustomUser
+#         fields = ['avatar', 'bio', 'website', 'social_media']
+#         labels = {
+#             'avatar': 'Аватар профиля',
+#             'bio': 'Биография',
+#             'website': 'Веб-сайт',
+#             'social_media': 'Социальные сети'
+#         }
+#         widgets = {
+#             'bio': forms.Textarea(attrs={'rows': 4}),
+#         }
+#
+# class UserSettingsForm(forms.ModelForm):
+#     class Meta:
+#         model = CustomUser
+#         fields = ['email', 'first_name', 'last_name']
+
+class ProfileForm(forms.ModelForm):
     class Meta:
         model = CustomUser
-        fields = ['avatar', 'bio', 'website', 'social_media']
+        fields = [
+            'avatar',
+            'banner',
+            'first_name',
+            'last_name',
+            'email',
+            'bio',
+            'website',
+            'social_media'
+        ]
         labels = {
-            'avatar': 'Аватар профиля',
+            'avatar': 'Аватар',
+            'banner': 'Баннер профиля',
             'bio': 'Биография',
             'website': 'Веб-сайт',
             'social_media': 'Социальные сети'
@@ -40,7 +69,8 @@ class CreatorProfileForm(forms.ModelForm):
             'bio': forms.Textarea(attrs={'rows': 4}),
         }
 
-class UserSettingsForm(forms.ModelForm):
-    class Meta:
-        model = CustomUser
-        fields = ['email', 'first_name', 'last_name']
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Делаем email обязательным только при первом сохранении
+        if self.instance and self.instance.email:
+            self.fields['email'].required = False

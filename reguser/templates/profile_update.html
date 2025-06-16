@@ -2,30 +2,64 @@
 {% load static %}
 {% block content %}
 <div class="container mt-5">
-    <h2>Обновление профиля создателя</h2>
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Редактирование профиля</h2>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
 
-    {% if messages %}
-        {% for message in messages %}
-        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-        {% endfor %}
-    {% endif %}
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Аватар</label>
+                                {{ form.avatar }}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Баннер профиля</label>
+                                {{ form.banner }}
+                            </div>
+                        </div>
 
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Имя</label>
+                                {{ form.first_name }}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Фамилия</label>
+                                {{ form.last_name }}
+                            </div>
+                        </div>
 
-        <div class="mb-3">
-            <label class="form-label">Текущий аватар:</label>
-            {% if user.avatar %}
-                <img src="{{ user.avatar.url }}" alt="Avatar" class="img-thumbnail" width="150">
-            {% else %}
-                <p>Аватар не установлен</p>
-            {% endif %}
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            {{ form.email }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Биография</label>
+                            {{ form.bio }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Веб-сайт</label>
+                            {{ form.website }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Социальные сети</label>
+                            {{ form.social_media }}
+                            <div class="form-text">Ссылки через запятую</div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">Сохранить изменения</button>
+                    </form>
+                </div>
+            </div>
         </div>
-
-        {{ form.as_p }}
-
-        <button type="submit" class="btn btn-primary">Сохранить изменения</button>
-        <a href="{% url 'home' %}" class="btn btn-secondary">Отмена</a>
-    </form>
+    </div>
 </div>
 {% endblock content %}

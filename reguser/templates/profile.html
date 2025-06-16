@@ -1,0 +1,275 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<div class="page-wrapper">
+  <div class="banner">
+    {% if profile_user.banner and profile_user.banner.url %}
+      <a class="img-trim"><img src="{{ profile_user.banner.url }}" alt="{{ profile_user.username }}"></a>
+    {% else %}
+      <div class="banner-placeholder">Баннер отсутствует</div>
+    {% endif %}
+  </div>
+  <div class="logo-column">
+    <div class="logo-properties-column">
+      {% if profile_user.avatar and profile_user.avatar.url %}
+        <a class="logo-img-trim"><img src="{{ profile_user.avatar.url }}" alt="{{ profile_user.username }}"></a>
+      {% else %}
+        <div class="banner-placeholder">Баннер отсутствует</div>
+      {% endif %}
+    </div>
+  </div>
+  <div class="head-column">
+    <div class="profile-name" id="profile-name">{{ profile_user.username }}</div>
+    {% if profile_user.is_creator %}
+      <span class="badge bg-primary">Создатель контента</span>
+    {% else %}
+      <span class="badge bg-secondary">Пользователь</span>
+    {% endif %}
+<!--    <div class="profile-description" id="profile-description">{{ profile_user.bio }}</div>-->
+    <div class="sub-count" id="sub-count">вы лох у вас: {{ subscriptions.count }}</div>
+  </div>
+
+<!--  <div class="tiers">-->
+<!--    {% for tier in creator.tiers.all %}-->
+<!--    <div class="tier-card">-->
+<!--      <h3>{{ tier.name }} - ${{ tier.price }}/мес</h3>-->
+<!--      <p>{{ tier.description }}</p>-->
+<!--      <button>Подписаться</button>-->
+<!--    </div>-->
+<!--    {% endfor %}-->
+<!--  </div>-->
+
+  <div class="tabs-container">
+    <!-- <div class="tab-line"></div> -->
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+      <li class="nav-item">
+        <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button"
+          role="tab" aria-controls="home-tab-pane" aria-selected="true">Главная страница</button>
+      </li>
+      {% if profile_user.role == 'creator' %}
+      <li class="nav-item">
+        <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-tab-pane" type="button"
+          role="tab" aria-controls="profile-tab-pane" aria-selected="false">Магазин</button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact-tab-pane" type="button"
+          role="tab" aria-controls="contact-tab-pane" aria-selected="false">О создателе</button>
+      </li>
+      {% endif %}
+    </ul>
+  </div>
+  <div class="tab-content" id="myTabContent">
+    <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
+      Недавние публикации от <span>{{ profile_user.username }}'a</span>
+      <div class="filter-tab-sections">
+        <div class="btn-group">
+          <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+            data-bs-auto-close="true" aria-expanded="false">
+            Тип публикации
+          </button>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#"><span class="icon1"></span>Изображение</a></li>
+            <li><a class="dropdown-item" href="#"><span class="icon2"></span>Опрос</a></li>
+            <li><a class="dropdown-item" href="#"><span class="icon3"></span>Текст</a></li>
+            <li><a class="dropdown-item" href="#"><span class="icon4"></span>Видео</a></li>
+          </ul>
+        </div>
+        <div class="btn-group">
+          <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+            data-bs-auto-close="true" aria-expanded="false">
+            Вариант2
+          </button>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#">Menu item</a></li>
+            <li><a class="dropdown-item" href="#">Menu item</a></li>
+            <li><a class="dropdown-item" href="#">Menu item</a></li>
+          </ul>
+        </div>
+        <div class="btn-group">
+          <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+            data-bs-auto-close="true" aria-expanded="false">
+            Дата
+          </button>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#">Menu item</a></li>
+            <li><a class="dropdown-item" href="#">Menu item</a></li>
+            <li><a class="dropdown-item" href="#">Menu item</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="post-column">
+        <!-- Контент для создателей -->
+        {% if profile_user.role == 'creator' and contents %}
+            <div class="creator-content mt-5">
+                <h3>Мой контент</h3>
+                <div class="row">
+                    {% for content in contents %}
+                        <div class="col-md-4 mb-4">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ content.title }}</h5>
+                                    <p class="card-text">{{ content.description|truncatechars:100 }}</p>
+                                </div>
+                                <div class="card-footer">
+                                    <a href="{% url 'content_detail' content.id %}" class="btn btn-sm btn-outline-primary">
+                                        Подробнее
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- Контент для обычных пользователей -->
+        {% if profile_user.role == 'user' and subscriptions %}
+            <div class="user-subscriptions mt-5">
+                <h3>Мои подписки</h3>
+                <div class="row">
+                    {% for subscription in subscriptions %}
+                        <div class="col-md-6 mb-4">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ subscription.tier.name }}</h5>
+                                    <p class="card-text">{{ subscription.tier.description }}</p>
+                                    <p class="text-muted">${{ subscription.tier.price }}/мес</p>
+                                </div>
+                                <div class="card-footer">
+                                    <small class="text-muted">
+                                        Подписка активна с {{ subscription.start_date|date:"d.m.Y" }}
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+<!--        <div class="post-example">-->
+<!--          <div class="post-divider">-->
+<!--            <div class="photo-placehold-post">-->
+<!--              <a class="post-img-trim"><img src="{% static 'img/postpic.jpg' %}"></a>-->
+<!--            </div>-->
+<!--            <div class="text-placehold-post">-->
+<!--              <div class="text-placehold">-->
+<!--                <div class="name-post">Название поста-->
+<!--                  <div class="date-post">Дата поста</div>-->
+<!--                </div>-->
+<!--                <div class="description-post">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Fugit nisi-->
+<!--                  pariatur impedit qui obcaecati necessitatibus. Facilis reprehenderit officia tenetur eligendi soluta-->
+<!--                  quia quod explicabo, optio, atque perferendis animi consequuntur ab.</div>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--        <div class="post-example">-->
+<!--          <div class="post-divider">-->
+<!--            <div class="photo-placehold-post"></div>-->
+<!--            <div class="text-placehold-post">-->
+<!--              <div class="text-placehold">-->
+<!--                <div class="name-post">Название поста-->
+<!--                  <div class="date-post">Дата поста</div>-->
+<!--                </div>-->
+<!--                <div class="description-post">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Fugit nisi-->
+<!--                  pariatur impedit qui obcaecati necessitatibus. Facilis reprehenderit officia tenetur eligendi soluta-->
+<!--                  quia quod explicabo, optio, atque perferendis animi consequuntur ab.</div>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--        <div class="post-example">-->
+<!--          <div class="post-divider">-->
+<!--            <div class="photo-placehold-post"></div>-->
+<!--            <div class="text-placehold-post">-->
+<!--              <div class="text-placehold">-->
+<!--                <div class="name-post">Название поста-->
+<!--                  <div class="date-post">Дата поста</div>-->
+<!--                </div>-->
+<!--                <div class="description-post">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Fugit nisi-->
+<!--                  pariatur impedit qui obcaecati necessitatibus. Facilis reprehenderit officia tenetur eligendi soluta-->
+<!--                  quia quod explicabo, optio, atque perferendis animi consequuntur ab.</div>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+      </div>
+    </div>
+    <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
+      <div class="shop-column">
+<!--        <div class="shop-search">-->
+<!--          <div class="input-group">-->
+<!--            <button class="btn btn-outline-secondary" type="button" id="button-addon1"><span-->
+<!--                class="search-icon"></span></button>-->
+<!--            <input type="text" class="form-control" placeholder="" aria-label="Example text with button addon"-->
+<!--              aria-describedby="button-addon1">-->
+<!--          </div>-->
+<!--        </div>-->
+<!--        <div class="shop-items">-->
+<!--          <div class="shop-item-example">-->
+<!--            <div class="shop-divider">-->
+<!--              <div class="shop-item-pic">-->
+<!--                <a class="post-img-trim"><img src="{% static 'img/shop-pic1.jpg' %}"></a>-->
+<!--              </div>-->
+<!--              <div class="shop-item-text">-->
+<!--                <div class="shop-item-divider">-->
+<!--                  <div class="shop-item-descr">Описание товара</div>-->
+<!--                  <div class="item-price">цена товара</div>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="shop-item-example">-->
+<!--            <div class="shop-divider">-->
+<!--              <div class="shop-item-pic">-->
+<!--                <a class="post-img-trim"><img src="{% static 'img/shop-pic2.jpg' %}"></a>-->
+<!--              </div>-->
+<!--              <div class="shop-item-text">-->
+<!--                <div class="shop-item-divider">-->
+<!--                  <div class="shop-item-descr">Описание товара</div>-->
+<!--                  <div class="item-price">цена товара</div>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="shop-item-example">-->
+<!--            <div class="shop-divider">-->
+<!--              <div class="shop-item-pic">-->
+<!--                <a class="post-img-trim"><img src="{% static 'img/shop-pic3.jpg' %}"></a>-->
+<!--              </div>-->
+<!--              <div class="shop-item-text">-->
+<!--                <div class="shop-item-divider">-->
+<!--                  <div class="shop-item-descr">Описание товара</div>-->
+<!--                  <div class="item-price">цена товара</div>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="shop-item-example">-->
+<!--            <div class="shop-divider">-->
+<!--              <div class="shop-item-pic">-->
+<!--                <a class="post-img-trim"><img src="{% static 'img/shop-pic4.jpg' %}"></a>-->
+<!--              </div>-->
+<!--              <div class="shop-item-text">-->
+<!--                <div class="shop-item-divider">-->
+<!--                  <div class="shop-item-descr">Описание товара</div>-->
+<!--                  <div class="item-price">цена товара</div>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+      </div>
+    </div>
+    <div class="tab-pane fade" id="contact-tab-pane" role="tabpanel" aria-labelledby="contact-tab" tabindex="0">
+      <div class="profile-column">
+        <div class="profile-full-descr">
+          <h3>О себе</h3>
+          <div class="profile-info">{{ profile_user.bio }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

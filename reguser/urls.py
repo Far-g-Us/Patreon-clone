@@ -31,11 +31,11 @@ urlpatterns = [
              template_name='registration/password_reset_complete.html'
          ),
          name='password_reset_complete'),
-    path('settings/', views.user_settings, name='user_settings'),
+    # path('settings/', views.user_settings, name='user_settings'),
 
     # Для обычного пользователя
-    path('profile/<int:user_id>/', views.user_profile, name='user_profile'),
-
+    path('profile/', views.profile, name='profile'),
+    path('profile/update/', views.profile_update, name='profile_update'),
     # Для создателей
-    path('creator/<int:user_id>/', views.creator_profile, name='creator_profile'),
+    # path('creator/<int:user_id>/', views.creator_profile, name='creator_profile'),
 ]
