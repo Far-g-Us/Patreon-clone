@@ -4,11 +4,19 @@
 
 <div class="page-wrapper">
   <div class="banner">
-    <a class="img-trim"><img src="{{ creator.banner.url }}" alt="{{ creator.user.username }}"></a>
+    {% if creator.banner and creator.banner.url %}
+      <a class="img-trim"><img src="{{ creator.banner.url }}" alt="{{ creator.user.username }}"></a>
+    {% else %}
+      <div class="banner-placeholder">Баннер отсутствует</div>
+    {% endif %}
   </div>
   <div class="logo-column">
     <div class="logo-properties-column">
-      <a class="logo-img-trim"><img src="{{ creator.avatar.url }}" alt="{{ creator.user.username }}"></a>
+      {% if creator.avatar and creator.avatar.url %}
+        <a class="logo-img-trim"><img src="{{ creator.avatar.url }}" alt="{{ creator.user.username }}"></a>
+      {% else %}
+        <div class="banner-placeholder">Баннер отсутствует</div>
+      {% endif %}
     </div>
   </div>
   <div class="head-column">

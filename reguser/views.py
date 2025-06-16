@@ -5,7 +5,8 @@ from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
 from django.http import Http404
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import login, logout
+from django.contrib.auth import login, logout  as auth_logout
+from django.views.decorators.http import require_http_methods
 from django.views.generic import ListView
 from home.models import CustomUser, Content
 from .forms import UserRegisterForm, CreatorProfileForm, UserSettingsForm
@@ -44,29 +45,34 @@ def register(request):
         form = UserRegisterForm(request.POST)
         if form.is_valid():
             user = form.save()
-
-            # Если пользователь регистрируется как создатель
-            if user.role == 'creator':
-                profile_form = CreatorProfileForm(request.POST, request.FILES, instance=user)
-                if profile_form.is_valid():
-                    profile_form.save()
-
             login(request, user)
-            return redirect('home')
+            messages.success(request, f'Аккаунт успешно создан! Добро пожаловать, {user.username}!')
+
+            # Перенаправляем в зависимости от роли
+            if user.role == 'creator':
+                return redirect('profile_update')
+            else:
+                return redirect('home')
     else:
         form = UserRegisterForm()
 
     return render(request, 'registration.html', {'form': form})
 
+
+@require_http_methods(["GET", "POST"])
 def custom_logout(request):
-    logout(request)
-    messages.success(request, 'Вы успешно вышли из системы')
-    return redirect('home')
+    if request.method == "POST":
+        auth_logout(request)
+        messages.success(request, "Вы успешно вышли из системы")
+        return redirect('home')
+    else:
+        # Для GET-запросов показываем страницу подтверждения
+        return render(request, 'logout_confirm.html')
 
 
 def creator_profile(request, user_id):
     creator = get_object_or_404(
-        CustomUser.objects.select_related('creator_profile'),
+        CustomUser,
         id=user_id,
         role='creator'
     )
@@ -103,14 +109,23 @@ def creator_profile_update(request, user_id):
     return redirect('creator_profile', user_id=request.user.id)
 
 @login_required
-def user_profile(request):
-    # Для создателей перенаправляем на их профиль
-    if request.user.is_creator:
-        return redirect('creator_profile', user_id=request.user.id)
+def user_profile(request, user_id):
+    profile_user = request.user
+
+    # Для обычных пользователей показываем подписки
+    subscriptions = None
+    if profile_user.role == 'user':
+        subscriptions = profile_user.subscriptions.filter(is_active=True)
+
+    # Для создателей показываем контент
+    contents = None
+    if profile_user.role == 'creator':
+        contents = Content.objects.filter(creator=profile_user)
 
     return render(request, 'user_profile.html', {
-        'user': request.user,
-        'subscriptions': request.user.subscriptions.all()
+        'profile_user': profile_user,
+        'subscriptions': subscriptions,
+        'contents': contents
     })
 
 @login_required
@@ -127,11 +142,11 @@ def user_settings(request):
     return render(request, 'settings.html', {'form': form})
 
 
-def content_list(request):
-    content_list = Content.objects.filter(is_public=True).order_by('-created_at')
-    paginator = Paginator(content_list, 10)  # 10 элементов на страницу
-
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-
-    return render(request, 'list.html', {'page_obj': page_obj})
+# def content_list(request):
+#     content_list = Content.objects.filter(is_public=True).order_by('-created_at')
+#     paginator = Paginator(content_list, 10)  # 10 элементов на страницу
+#
+#     page_number = request.GET.get('page')
+#     page_obj = paginator.get_page(page_number)
+#
+#     return render(request, 'list.html', {'page_obj': page_obj})

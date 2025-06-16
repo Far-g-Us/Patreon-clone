@@ -5,7 +5,11 @@ from home.models import CustomUser
 
 class UserRegisterForm(UserCreationForm):
     email = forms.EmailField(required=False, help_text="Необязательно")
-    role = forms.ChoiceField(choices=CustomUser.ROLE_CHOICES, widget=forms.RadioSelect)
+    role = forms.ChoiceField(
+        choices=CustomUser.ROLE_CHOICES,
+        widget=forms.RadioSelect,
+        label='Тип аккаунта'
+    )
 
     class Meta:
         model = CustomUser
@@ -13,6 +17,13 @@ class UserRegisterForm(UserCreationForm):
 
     def clean_email(self):
         return self.cleaned_data.get('email', '')
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.role = self.cleaned_data['role']
+        if commit:
+            user.save()
+        return user
 
 class CreatorProfileForm(forms.ModelForm):
     banner = forms.ImageField(required=False, help_text="Необязательно")

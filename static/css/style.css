@@ -50,7 +50,7 @@ a.home-icon-size{
     background: #474747;
 }
 span.search-icon {
-    background: url("img/search-ico.svg") no-repeat;
+    background: url("search-ico.svg") no-repeat;
     float: left;
     width: 15px;
     height: 15px;
@@ -539,7 +539,7 @@ span.search-icon {
 
 .role-card {
     display: inline-block;
-    width: 45%;
+    width: 35%;
     margin: 10px;
     padding: 15px;
     border: 1px solid #ddd;
@@ -558,6 +558,6 @@ span.search-icon {
 }
 
 .role-card input[type="radio"]:checked + .card-content {
-    background-color: #e7f3ff;
+
     border-color: #007bff;
 }

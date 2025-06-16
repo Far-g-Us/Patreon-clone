@@ -13,45 +13,52 @@
       <div class="login-area">
         <div class="login-welcome">Регистрация</div>
         <div class="login-form">
-          <form method="post" enctype="multipart/form-data">
-              {% csrf_token %}
-
-              <div>
-                <label for="id_username" class="form-label">Username</label>
-                {{ form.username }}
-              </div>
-              <div>
-                <label for="exampleInputEmail1" class="form-label">Email (необязательно)</label>
-                {{ form.email }}
-              </div>
-              <div>
-                  <label for="exampleInputPass1" class="form-label">Password</label>
-                  {{ form.password1 }}
-              </div>
-              <div>
-                  <label for="exampleInputPass2" class="form-label">Confirm password</label>
-                  {{ form.password2 }}
-              </div>
-
-              <div class="role-selection">
-                  <h3>Выберите тип аккаунта:</h3>
-                  {% for choice in form.role %}
-                      <label class="role-card">
-                          {{ choice.tag }}
-                          <div class="card-content">
-                              <h4>{{ choice.choice_label }}</h4>
-                              {% if choice.data.value == 'user' %}
-                                  <p>Покупайте контент, подписывайтесь на создателей</p>
-                              {% else %}
-                                  <p>Продавайте контент, создавайте подписки</p>
-                              {% endif %}
-                          </div>
-                      </label>
-                  {% endfor %}
-              </div>
-
-              <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
-          </form>
+            <form method="post">
+                {% csrf_token %}
+            
+                <div class="mb-3">
+                    {{ form.username.label_tag }}
+                    {{ form.username }}
+                    {% if form.username.errors %}
+                    <div class="text-danger">{{ form.username.errors }}</div>
+                    {% endif %}
+                </div>
+            
+                <div class="mb-3">
+                    {{ form.password1.label_tag }}
+                    {{ form.password1 }}
+                    {% if form.password1.errors %}
+                    <div class="text-danger">{{ form.password1.errors }}</div>
+                    {% endif %}
+                </div>
+            
+                <div class="mb-3">
+                    {{ form.password2.label_tag }}
+                    {{ form.password2 }}
+                    {% if form.password2.errors %}
+                    <div class="text-danger">{{ form.password2.errors }}</div>
+                    {% endif %}
+                </div>
+            
+                <div class="mb-3">
+                    <label class="form-label">Тип аккаунта:</label>
+                    <div class="role-selection">
+                        {% for choice in form.role %}
+                        <div class="form-check">
+                            {{ choice.tag }}
+                            <label class="form-check-label" for="{{ choice.id_for_label }}">
+                                {{ choice.choice_label }}
+                            </label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% if form.role.errors %}
+                    <div class="text-danger">{{ form.role.errors }}</div>
+                    {% endif %}
+                </div>
+            
+                <button type="submit" class="btn btn-primary w-100">Зарегистрироваться</button>
+            </form>
           <p>Уже есть аккаунт? <a href="{% url 'login' %}">Войти</a></p>
 <!--          <form>-->
 <!--            <div class="mb-3">-->

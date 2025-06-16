@@ -2,18 +2,32 @@
 {% load static %}
 {% block content %}
 <div class="container mt-5">
-    <h2>Профиль пользователя: {{ user.username }}</h2>
-    <p>Email: {{ user.email|default:"Не указан" }}</p>
-
-    <h3>Ваши подписки</h3>
-    {% if user.subscriptions.all %}
-        <ul>
-        {% for subscription in user.subscriptions.all %}
-            <li>{{ subscription.tier.name }} - ${{ subscription.tier.price }}/мес</li>
-        {% endfor %}
-        </ul>
-    {% else %}
-        <p>У вас нет активных подписок</p>
-    {% endif %}
+    <div class="avatar">
+        {% if profile_user.avatar and profile_user.avatar.url %}
+            <img src="{{ profile_user.avatar.url }}" class="rounded-circle" width="150" height="150">
+        {% else %}
+            <div class="avatar-placeholder">Баннер отсутствует</div>
+        {% endif %}
+    </div>
+    <h2>User Profile: {{ user.username }}</h2>
+    <div class="banner">
+        {% if profile_user.banner and profile_user.banner.url %}
+            <img src="{{ profile_user.banner.url }}" class="banner-img" alt="Banner">
+        {% else %}
+            <div class="banner-placeholder">Баннер отсутствует</div>
+        {% endif %}
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Your Subscriptions</h5>
+            <ul>
+                {% for sub in subscriptions %}
+                    <li>{{ sub.tier.name }} - ${{ sub.tier.price }}/month</li>
+                {% empty %}
+                    <li>No active subscriptions</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
 </div>
 {% endblock content %}

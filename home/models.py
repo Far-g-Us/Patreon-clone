@@ -16,8 +16,8 @@ class CustomUser(AbstractUser):
     email = models.EmailField(blank=True, null=True)
     ###
     bio = models.TextField(blank=True, null=True)
-    avatar = models.ImageField(upload_to='avatars/', blank=True, null=True, default='img/pic.png')
-    banner = models.ImageField(upload_to='banner/', blank=True, null=True, default='img/banner.jpg')
+    avatar = models.ImageField(default='avatars/default_pic.png', upload_to='avatars/', blank=True, null=True)
+    banner = models.ImageField(default='banners/default_banner.jpg', upload_to='banner/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     # Для создателей
@@ -27,6 +27,10 @@ class CustomUser(AbstractUser):
     @property
     def is_creator(self) -> bool:
         return self.role == 'creator'
+
+    @property
+    def is_regular_user(self):
+        return self.role == 'user'
 
     def get_absolute_url(self):
         if self.is_creator:
@@ -58,7 +62,14 @@ class Content(models.Model):
     is_public = models.BooleanField(default=False)  # Бесплатный контент
 
 class Subscription(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='subscriptions'  # Добавьте это!
+    )
     tier = models.ForeignKey(Tier, on_delete=models.CASCADE)
     start_date = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.tier.name}"

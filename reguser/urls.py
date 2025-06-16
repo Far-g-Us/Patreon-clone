@@ -34,7 +34,7 @@ urlpatterns = [
     path('settings/', views.user_settings, name='user_settings'),
 
     # Для обычного пользователя
-    path('profile/', views.user_profile, name='user_profile'),
+    path('profile/<int:user_id>/', views.user_profile, name='user_profile'),
 
     # Для создателей
     path('creator/<int:user_id>/', views.creator_profile, name='creator_profile'),

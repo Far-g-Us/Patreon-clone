@@ -7,14 +7,17 @@ from .mixins import CreatorRequiredMixin, UserRequiredMixin
 from .models import Content, Subscription, CustomUser
 
 
-@cache_page(60 * 15)
+#@cache_page(60 * 15)
 def home(request):
-    featured_creators = CustomUser.objects.filter(
-        is_creator=True
-    ).order_by('-date_joined')[:5]
+    featured_creators = CustomUser.objects.filter(role='creator').order_by('-date_joined')[:5]
+
+    # Получаем последний публичный контент (если есть модель Content)
+    # from content.models import Content
+    # latest_content = Content.objects.filter(is_public=True).order_by('-created_at')[:5]
 
     return render(request, 'index.html', {
-        'featured_creators': featured_creators
+        'featured_creators': featured_creators,
+        # 'latest_content': latest_content
     })
 
 class ContentDetailView(LoginRequiredMixin, DetailView):
