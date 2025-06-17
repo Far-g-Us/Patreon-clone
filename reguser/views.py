@@ -1,24 +1,14 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
-from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
-from django.http import Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout  as auth_logout
+from django.urls import reverse
 from django.views.decorators.http import require_http_methods
-from django.views.generic import ListView
 from home.models import CustomUser, Content
 from .forms import UserRegisterForm, ProfileForm
 
-
-# class ProfileView(ListView):
-#     model = Content
-#     fields = '__all__'
-#     template_name = 'creator_profile.html'
-#
-#     def get_queryset(self):
-#         return Content.objects.all()
 
 def custom_login(request):
     if request.user.is_authenticated:
@@ -105,9 +95,10 @@ def custom_logout(request):
 
 
 @login_required
-def profile(request):
+def profile(request, user_id):
     """Единый профиль для всех пользователей"""
     user = request.user
+    profile_user = get_object_or_404(CustomUser, id=user_id)
     context = {'profile_user': user}
 
     # Для создателей добавляем контент
@@ -126,18 +117,19 @@ def profile(request):
 @login_required
 def profile_update(request):
     """Обновление профиля для всех пользователей"""
-    user = request.user
-
     if request.method == 'POST':
-        form = ProfileForm(request.POST, request.FILES, instance=user)
+        form = ProfileForm(request.POST, request.FILES, instance=request.user)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Профиль успешно обновлен!')
-            return redirect('profile')
+            # Используем GET-параметр для передачи сообщения об успехе
+            return redirect('{}?success=1'.format(reverse('profile_update')))
     else:
-        form = ProfileForm(instance=user)
+        form = ProfileForm(instance=request.user)
 
-    return render(request, 'profile_update.html', {'form': form})
+    return render(request, 'profile_update.html', {
+        'form': form,
+        'success': request.GET.get('success')
+    })
 
 # @login_required
 # def creator_profile_update(request, user_id):

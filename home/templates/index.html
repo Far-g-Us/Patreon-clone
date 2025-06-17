@@ -1,22 +1,132 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
+<div class="container mt-5">
+    <!-- Блок для обычных пользователей -->
+    {% if user.is_authenticated and user.role == 'user' and user_subscriptions %}
+        <div class="card mb-5">
+            <div class="card-header">
+                <h2>Ваши активные подписки</h2>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% for subscription in user_subscriptions %}
+                        <div class="col-md-4 mb-4">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ subscription.tier.name }}</h5>
+                                    <p class="card-text">{{ subscription.tier.description|truncatechars:100 }}</p>
+                                    <p class="text-muted">${{ subscription.tier.price }}/мес</p>
+                                </div>
+                                <div class="card-footer">
+                                    <small class="text-muted">
+                                        Подписка активна с {{ subscription.start_date|date:"d.m.Y" }}
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <a href="{% url 'subscriptions_list' %}" class="btn btn-outline-primary">
+                    Посмотреть все подписки
+                </a>
+            </div>
+        </div>
+    {% endif %}
 
-<div class="tabs-container">
-  <ul class="nav nav-tabs" id="myTab" role="tablist">
-    <li class="nav-item">
-      <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button"
-        role="tab" aria-controls="home-tab-pane" aria-selected="true">Главная страница</button>
-    </li>
-    <li class="nav-item">
-      <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-tab-pane" type="button"
-        role="tab" aria-controls="profile-tab-pane" aria-selected="false">Магазин</button>
-    </li>
-    <li class="nav-item">
-      <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact-tab-pane" type="button"
-        role="tab" aria-controls="contact-tab-pane" aria-selected="false">О создателе</button>
-    </li>
-  </ul>
+    <!-- Блок для создателей контента -->
+    {% if user.is_authenticated and user.role == 'creator' and user_contents %}
+        <div class="card mb-5">
+            <div class="card-header">
+                <h2>Ваш последний контент</h2>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% for content in user_contents %}
+                        <div class="col-md-4 mb-4">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ content.title }}</h5>
+                                    <p class="card-text">{{ content.description|truncatechars:100 }}</p>
+                                </div>
+                                <div class="card-footer">
+                                    <a href="{% url 'content_detail' content.id %}" class="btn btn-sm btn-outline-primary">
+                                        Подробнее
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <a href="{% url 'creator_list' user.id %}" class="btn btn-outline-primary">
+                    Посмотреть весь контент
+                </a>
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Популярные создатели -->
+    <div class="card mb-5">
+        <div class="card-header">
+            <h2>Популярные создатели</h2>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                {% for creator in featured_creators %}
+                    <div class="col-md-3 mb-4">
+                        <div class="card h-100">
+                            {% if creator.avatar %}
+                                <img src="{{ creator.avatar.url }}" class="card-img-top" alt="{{ creator.username }}">
+                            {% endif %}
+                            <div class="card-body">
+                                <h5 class="card-title">{{ creator.username }}</h5>
+                                <p class="card-text">{{ creator.bio|truncatechars:100 }}</p>
+                                <a href="{% url 'profile' creator.id %}" class="btn btn-sm btn-outline-primary">
+                                    Профиль
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="col-12">
+                        <p>Популярные создатели не найдены</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Последний публичный контент -->
+    <div class="card">
+        <div class="card-header">
+            <h2>Последний публичный контент</h2>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                {% for content in latest_content %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ content.title }}</h5>
+                                <p class="card-text">{{ content.description|truncatechars:100 }}</p>
+                                <p class="text-muted">
+                                    Автор: <a href="{% url 'profile' content.creator.id %}">{{ content.creator.username }}</a>
+                                </p>
+                            </div>
+                            <div class="card-footer">
+                                <a href="{% url 'content_detail' content.id %}" class="btn btn-sm btn-outline-primary">
+                                    Подробнее
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="col-12">
+                        <p>Публичный контент не найден</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
 </div>
-
 {% endblock content %}

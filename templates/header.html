@@ -2,7 +2,7 @@
 
 <header>
     <div class="tab-container">
-      <div class="tab-icon"><a class="home-icon-size" href="{% url 'home' %}"><img class="home-icon" src="{% static 'img/home-ico.svg' %}"></a></div>
+      <div class="tab-icon"><a class="home-icon-size" href="{% url 'home' %}"><img class="home-icon" src="{% static 'css/svg/home-ico.svg' %}"></a></div>
       <div class="tab-search">
         <div class="input-group mb-3">
           <button class="btn btn-outline-secondary" type="button" id="button-addon1"><span class="search-icon"></span></button>
@@ -15,7 +15,7 @@
         <a class="btn login-btn" href="{% url 'login' %}">Войти</a>
         {% endif %}
         {% if user.is_authenticated %}
-        <a class="btn login-btn" href="{% url 'profile' %}">Профиль</a>
+        <a class="btn login-btn" href="{% url 'profile' user_id=request.user.id %}">Профиль</a>
         <a class="btn login-btn" href="{% url 'logout' %}">Выйти</a>
         <a href="{% url 'profile_update' %}" class="btn btn-outline-primary mt-2">Редактировать профиль</a>
         {% endif %}

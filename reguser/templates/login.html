@@ -21,7 +21,7 @@
         {% endif %}
 
         <div class="login-form">
-            <form method="post">
+            <form method="post" id="login-form" class="needs-validation" novalidate>
                 {% csrf_token %}
                 <input type="hidden" name="next" value="{{ next }}">
 
@@ -37,7 +37,12 @@
                            class="form-control" required>
                 </div>
 
-                <button type="submit" class="btn btn-primary btn-block">Войти</button>
+
+                <button type="submit" id="login-btn" class="btn btn-primary btn-block">
+                    <span id="login-text">Войти</span>
+                    <span id="login-spinner" class="spinner-border spinner-border-sm d-none"></span>
+                </button>
+<!--                <button type="submit" class="btn btn-primary btn-block">Войти</button>-->
                 <a href="{% url 'password_reset' %}" class="btn btn-link btn-block">Забыли пароль?</a>
             </form>
           <hr>

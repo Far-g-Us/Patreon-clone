@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-header">
+            <h2>Ваши подписки</h2>
+        </div>
+        <div class="card-body">
+            {% if subscriptions %}
+                <div class="row">
+                    {% for subscription in subscriptions %}
+                        <div class="col-md-6 mb-4">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ subscription.tier.name }}</h5>
+                                    <p class="card-text">{{ subscription.tier.description }}</p>
+                                    <p class="text-muted">${{ subscription.tier.price }}/мес</p>
+                                </div>
+                                <div class="card-footer">
+                                    <small class="text-muted">
+                                        Подписка активна с {{ subscription.start_date|date:"d.m.Y" }}
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>У вас нет активных подписок</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

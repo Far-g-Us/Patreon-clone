@@ -10,7 +10,7 @@
                 </div>
                 <div class="card-body">
                     <p>Вы уверены, что хотите выйти из системы?</p>
-                    <form method="post">
+                    <form method="post" class="needs-validation" novalidate>
                         {% csrf_token %}
                         <button type="submit" class="btn btn-danger">Да, выйти</button>
                         <a href="{% url 'home' %}" class="btn btn-secondary">Отмена</a>

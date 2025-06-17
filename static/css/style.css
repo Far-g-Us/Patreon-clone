@@ -50,7 +50,7 @@ a.home-icon-size{
     background: #474747;
 }
 span.search-icon {
-    background: url("search-ico.svg") no-repeat;
+    background: url("svg/search-ico.svg") no-repeat;
     float: left;
     width: 15px;
     height: 15px;
@@ -253,7 +253,7 @@ span.search-icon {
     display: block;
     } */
     span.icon1 {
-        background: url(img/img-ico.svg) no-repeat;
+        background: url("svg/img-ico.svg") no-repeat;
         float: left;
         width: 20px;
         height: 20px;
@@ -261,7 +261,7 @@ span.search-icon {
         margin-top: 3px;
     }
     span.icon2 {
-        background: url(img/quest-ico.svg) no-repeat;
+        background: url("svg/quest-ico.svg") no-repeat;
         float: left;
         width: 20px;
         height: 20px;
@@ -269,7 +269,7 @@ span.search-icon {
         margin-top: 3px;
     }
     span.icon3 {
-        background: url(img/text-ico.svg) no-repeat;
+        background: url("svg/text-ico.svg") no-repeat;
         float: left;
         width: 20px;
         height: 20px;
@@ -277,7 +277,7 @@ span.search-icon {
         margin-top: 3px;
     }
     span.icon4 {
-        background: url(img/vid-ico.svg) no-repeat;
+        background: url("svg/vid-ico.svg") no-repeat;
         float: left;
         width: 20px;
         height: 20px;

@@ -13,7 +13,7 @@
       <div class="login-area">
         <div class="login-welcome">Регистрация</div>
         <div class="login-form">
-            <form method="post">
+            <form method="post" class="needs-validation" novalidate>
                 {% csrf_token %}
             
                 <div class="mb-3">
@@ -60,7 +60,7 @@
                 <button type="submit" class="btn btn-primary w-100">Зарегистрироваться</button>
             </form>
           <p>Уже есть аккаунт? <a href="{% url 'login' %}">Войти</a></p>
-<!--          <form>-->
+<!--          <form class="needs-validation" novalidate>-->
 <!--            <div class="mb-3">-->
 <!--              <label for="exampleInputEmail1" class="form-label">Email address</label>-->
 <!--              <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">-->
