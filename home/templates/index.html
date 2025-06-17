@@ -81,9 +81,11 @@
                             <div class="card-body">
                                 <h5 class="card-title">{{ creator.username }}</h5>
                                 <p class="card-text">{{ creator.bio|truncatechars:100 }}</p>
-                                <a href="{% url 'profile' creator.id %}" class="btn btn-sm btn-outline-primary">
-                                    Профиль
-                                </a>
+                                {% if user.is_authenticated %}
+                                    <a href="{% url 'profile' user_id=creator.id %}" class="btn btn-sm btn-outline-primary">Профиль</a>
+                                {% else %}
+                                    <span class="text-muted">Автор (требуется вход)</span>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
@@ -110,7 +112,11 @@
                                 <h5 class="card-title">{{ content.title }}</h5>
                                 <p class="card-text">{{ content.description|truncatechars:100 }}</p>
                                 <p class="text-muted">
-                                    Автор: <a href="{% url 'profile' content.creator.id %}">{{ content.creator.username }}</a>
+                                    Автор: {% if user.is_authenticated %}
+                                    <a href="{% url 'profile' content.creator.id %}">{{ content.creator.username }}</a>
+                                    {% else %}
+                                        <span class="text-muted">Автор (требуется вход)</span>
+                                    {% endif %}
                                 </p>
                             </div>
                             <div class="card-footer">

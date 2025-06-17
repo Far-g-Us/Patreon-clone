@@ -1,16 +1,16 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>{{ object.title }}</h1>
-<p>{{ object.description }}</p>
+  <h1>{{ object.title }}</h1>
+  <p>{{ object.description }}</p>
 
-{% if user_has_access %}
-  <a href="{% url 'download_content' object.pk %}" class="btn btn-primary">
-    Скачать файл ({{ object.file.size|filesizeformat }})
-  </a>
-{% else %}
-  <div class="alert alert-warning">
-    Требуется подписка на тариф "{{ object.tier.name }}"
-  </div>
-{% endif %}
+  {% if user_has_access %}
+    <a href="{% url 'download_content' object.pk %}" class="btn btn-primary">
+      Скачать файл ({{ object.file.size|filesizeformat }})
+    </a>
+  {% else %}
+    <div class="alert alert-warning">
+      Требуется подписка на тариф "{{ object.tier.name }}"
+    </div>
+  {% endif %}
 {% endblock %}

@@ -97,21 +97,24 @@ def custom_logout(request):
 @login_required
 def profile(request, user_id):
     """Единый профиль для всех пользователей"""
-    user = request.user
     profile_user = get_object_or_404(CustomUser, id=user_id)
-    context = {'profile_user': user}
 
     # Для создателей добавляем контент
-    if user.role == 'creator':
-        context['contents'] = Content.objects.filter(creator=user)
+    contents = None
+    if profile_user.role == 'creator':
+        contents = Content.objects.filter(creator=profile_user)
 
     # Для обычных пользователей добавляем подписки
-    elif user.role == 'user':
-        # Проверяем, есть ли у пользователя подписки
-        if hasattr(user, 'subscriptions'):
-            context['subscriptions'] = user.subscriptions.filter(is_active=True)
+    subscriptions = None
+    if request.user.is_authenticated and request.user.id == profile_user.id and profile_user.role == 'user':
+        if hasattr(profile_user, 'subscriptions'):
+            subscriptions = profile_user.subscriptions.filter(is_active=True)
 
-    return render(request, 'profile.html', context)
+    return render(request, 'profile.html', {
+        'profile_user': profile_user,
+        'contents': contents,
+        'subscriptions': subscriptions
+    })
 
 
 @login_required

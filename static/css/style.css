@@ -536,7 +536,6 @@ span.search-icon {
 .role-selection {
     margin: 20px 0;
 }
-
 .role-card {
     display: inline-block;
     width: 35%;
@@ -547,17 +546,80 @@ span.search-icon {
     cursor: pointer;
     transition: all 0.3s;
 }
-
 .role-card:hover {
     border-color: #007bff;
     box-shadow: 0 0 8px rgba(0,123,255,0.3);
 }
-
 .role-card input[type="radio"] {
     display: none;
 }
-
 .role-card input[type="radio"]:checked + .card-content {
-
     border-color: #007bff;
+}
+
+/* Sidebar */
+.sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    /*z-index: 100;*/
+    padding: 48px 0 0;
+    box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+    height: 100vh;
+    overflow-y: auto;
+}
+
+.sidebar .nav-link {
+    color: #fff;
+    border-radius: 0;
+    padding: 10px 20px;
+}
+
+.sidebar .nav-link.active {
+    background-color: rgba(255,255,255,0.1);
+}
+
+.sidebar .nav-link:hover {
+    background-color: rgba(255,255,255,0.1);
+}
+
+.sidebar .nav-link i {
+    margin-right: 10px;
+}
+
+.sidebar .dropdown-menu {
+    position: static;
+    margin: 0;
+    width: 100%;
+}
+
+.sidebar .dropdown-item {
+    color: #fff;
+    padding: 10px 20px;
+}
+
+.sidebar .dropdown-item:hover {
+    background-color: rgba(255,255,255,0.1);
+}
+
+.sidebar .dropdown-divider {
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.sidebar .sidebar-brand {
+    color: #fff;
+    font-size: 1.5rem;
+    padding: 10px 20px;
+}
+
+#scrollTopBtn {
+    display: none;
+    position: fixed;
+    bottom: 140px;
+    right: 100px;
+    /*z-index: 99;*/
+    width: 62px;
+    height: 35px;
+    padding: 0;
 }

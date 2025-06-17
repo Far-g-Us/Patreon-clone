@@ -74,3 +74,10 @@ class ProfileForm(forms.ModelForm):
         # Делаем email обязательным только при первом сохранении
         if self.instance and self.instance.email:
             self.fields['email'].required = False
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        # Проверка уникальности email
+        if CustomUser.objects.exclude(id=self.instance.id).filter(email=email).exists():
+            raise forms.ValidationError("Этот email уже используется")
+        return email

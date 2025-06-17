@@ -98,54 +98,31 @@
           </ul>
         </div>
       </div>
+
       <div class="post-column">
         <!-- Контент для создателей -->
         {% if profile_user.role == 'creator' and contents %}
-            <div class="creator-content mt-5">
-                <h3>Мой контент</h3>
-                <div class="row">
-                    {% for content in contents %}
-                        <div class="col-md-4 mb-4">
-                            <div class="card h-100">
-                                <div class="card-body">
-                                    <h5 class="card-title">{{ content.title }}</h5>
-                                    <p class="card-text">{{ content.description|truncatechars:100 }}</p>
-                                </div>
-                                <div class="card-footer">
-                                    <a href="{% url 'content_detail' content.id %}" class="btn btn-sm btn-outline-primary">
-                                        Подробнее
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
+            <div class="creator-section mt-5">
+                <h3>Контент создателя</h3>
+                <!-- ... -->
             </div>
         {% endif %}
 
-        <!-- Контент для обычных пользователей -->
-        {% if profile_user.role == 'user' and subscriptions %}
-            <div class="user-subscriptions mt-5">
-                <h3>Мои подписки</h3>
-                <div class="row">
-                    {% for subscription in subscriptions %}
-                        <div class="col-md-6 mb-4">
-                            <div class="card h-100">
-                                <div class="card-body">
-                                    <h5 class="card-title">{{ subscription.tier.name }}</h5>
-                                    <p class="card-text">{{ subscription.tier.description }}</p>
-                                    <p class="text-muted">${{ subscription.tier.price }}/мес</p>
-                                </div>
-                                <div class="card-footer">
-                                    <small class="text-muted">
-                                        Подписка активна с {{ subscription.start_date|date:"d.m.Y" }}
-                                    </small>
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
+        <!-- Подписки (только для владельца профиля) -->
+        {% if request.user.is_authenticated and request.user.id == profile_user.id %}
+            <!-- Кнопка редактирования (только для владельца) -->
+            <div class="mt-4">
+                <a href="{% url 'profile_update' %}" class="btn btn-primary">
+                    Редактировать профиль
+                </a>
             </div>
+
+            {% if profile_user.role == 'user' and subscriptions %}
+                <div class="user-subscriptions mt-5">
+                    <h3>Мои подписки</h3>
+                    <!-- ... -->
+                </div>
+            {% endif %}
         {% endif %}
 <!--        <div class="post-example">-->
 <!--          <div class="post-divider">-->

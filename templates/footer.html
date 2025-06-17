@@ -1,7 +1,44 @@
 {% load static %}
 
-<footer>
-  <div class="footer">
-    <div class="footer-text">Send Boobs. please</div>
-  </div>
+<footer class="bg-dark text-white mt-5 py-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <h5>PatreonClone</h5>
+                <p>Платформа для поддержки создателей контента</p>
+            </div>
+            <div class="col-md-2">
+                <h5>Навигация</h5>
+                <ul class="list-unstyled">
+                    <li><a href="{% url 'home' %}" class="text-white">Главная</a></li>
+                </ul>
+            </div>
+            <div class="col-md-2">
+                <h5>Аккаунт</h5>
+                <ul class="list-unstyled">
+                    {% if user.is_authenticated %}
+                        <li><a href="{% url 'profile' user_id=user.id %}" class="text-white">Профиль</a></li>
+                        <li><a href="{% url 'logout' %}" class="text-white">Выйти</a></li>
+                    {% else %}
+                        <li><a href="{% url 'login' %}" class="text-white">Войти</a></li>
+                        <li><a href="{% url 'register' %}" class="text-white">Регистрация</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+            <div class="col-md-2">
+                <button onclick="topFunction()" id="scrollTopBtn" title="Наверх" class="btn btn-primary">
+                    Наверх
+                </button>
+            </div>
+        </div>
+        <div class="text-center mt-3">
+            <p>&copy; 2025 PatreonClone. Все права защищены.</p>
+        </div>
+    </div>
 </footer>
+
+<!--<footer>-->
+<!--  <div class="footer">-->
+<!--    <div class="footer-text">Send Boobs. please</div>-->
+<!--  </div>-->
+<!--</footer>-->

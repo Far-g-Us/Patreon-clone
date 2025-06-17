@@ -2,7 +2,7 @@
 
 <header>
     <div class="tab-container">
-      <div class="tab-icon"><a class="home-icon-size" href="{% url 'home' %}"><img class="home-icon" src="{% static 'css/svg/home-ico.svg' %}"></a></div>
+      <div class="tab-icon"><a class="home-icon-size" href="{% url 'home' %}"><img class="home-icon" title="Домой" src="{% static 'css/svg/home-ico.svg' %}"></a></div>
       <div class="tab-search">
         <div class="input-group mb-3">
           <button class="btn btn-outline-secondary" type="button" id="button-addon1"><span class="search-icon"></span></button>
@@ -20,6 +20,8 @@
         <a href="{% url 'profile_update' %}" class="btn btn-outline-primary mt-2">Редактировать профиль</a>
         {% endif %}
       </div>
-      <div class="about"></div>
+      <div class="about">
+        <a class="btn login-btn" href="{% url 'about' %}">О сайте</a>
+      </div>
     </div>
 </header>

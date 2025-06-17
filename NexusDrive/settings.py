@@ -131,7 +131,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 MAX_FILE_SIZE = 1024 * 1024 * 500  # 500 MB
 
-
+LOGIN_URL = '/account/login/'
 AUTH_USER_MODEL = 'home.CustomUser'
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

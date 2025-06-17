@@ -64,6 +64,7 @@
 
                         <button type="submit" class="btn btn-primary w-100">Сохранить изменения</button>
                     </form>
+                    <a class="btn login-btn w-100" href="{% url 'profile' user_id=request.user.id %}">Выйти</a>
                 </div>
             </div>
         </div>

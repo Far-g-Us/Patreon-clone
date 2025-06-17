@@ -7,6 +7,17 @@ from .mixins import CreatorRequiredMixin, UserRequiredMixin
 from .models import Content, Subscription, CustomUser
 
 
+# Для скачивания файлов
+from django.http import FileResponse
+
+def download_content(request, pk):
+    content = get_object_or_404(Content, pk=pk)
+    # Проверка прав доступа
+    if not content.is_public and not request.user.subscriptions.filter(tier=content.tier).exists():
+        raise PermissionDenied("У вас нет доступа к этому файлу")
+
+    return FileResponse(content.file.open(), as_attachment=True)
+
 def home(request):
     # Популярные создатели
     featured_creators = CustomUser.objects.filter(role='creator').order_by('-date_joined')[:5]
@@ -14,22 +25,23 @@ def home(request):
     # Последний публичный контент
     latest_content = Content.objects.filter(is_public=True).order_by('-created_at')[:5]
 
-    # Подписки текущего пользователя
+    # Подписки текущего пользователя (только для авторизованных)
     user_subscriptions = None
     user_contents = None
 
-    if request.user.role == 'user':
-        user_subscriptions = Subscription.objects.filter(
-            user=request.user,
-            is_active=True
-        ).select_related('tier')[:5]
+    if request.user.is_authenticated:
+        # Для обычных пользователей
+        if hasattr(request.user, 'role') and request.user.role == 'user':
+            user_subscriptions = Subscription.objects.filter(
+                user=request.user,
+                is_active=True
+            ).select_related('tier')[:5]
 
-    # Для создателей контента
-    elif request.user.role == 'creator':
-        user_contents = Content.objects.filter(
-            creator=request.user
-        ).order_by('-created_at')[:5]
-
+        # Для создателей контента
+        elif hasattr(request.user, 'role') and request.user.role == 'creator':
+            user_contents = Content.objects.filter(
+                creator=request.user
+            ).order_by('-created_at')[:5]
 
     return render(request, 'index.html', {
         'featured_creators': featured_creators,
@@ -54,19 +66,6 @@ class ContentDetailView(LoginRequiredMixin, DetailView):
         context['user_has_access'] = user_has_access
         return context
 
-
-# Для скачивания файлов
-from django.http import FileResponse
-
-
-def download_content(request, pk):
-    content = get_object_or_404(Content, pk=pk)
-    # Проверка прав доступа
-    if not content.is_public and not request.user.subscriptions.filter(tier=content.tier).exists():
-        raise PermissionDenied("У вас нет доступа к этому файлу")
-
-    return FileResponse(content.file.open(), as_attachment=True)
-
 @login_required
 def subscription_list(request):
     if not request.user.role == 'user':
@@ -80,6 +79,9 @@ def subscription_list(request):
     return render(request, 'subscriptions_list.html', {
         'subscriptions': subscriptions
     })
+
+def about(request):
+    return render(request, 'about.html')
 
 # # Для создателей контента
 # class ContentCreateView(CreatorRequiredMixin, CreateView):
