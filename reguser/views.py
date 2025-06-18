@@ -56,44 +56,6 @@ def custom_logout(request):
         return render(request, 'logout_confirm.html')
 
 
-# def creator_profile(request, user_id):
-#     creator = get_object_or_404(
-#         CustomUser,
-#         id=user_id,
-#         role='creator'
-#     )
-#     # Проверяем, является ли пользователь создателем
-#     # if not creator.is_creator:
-#     #     raise Http404("Страница не найдена")
-#
-#     contents = Content.objects.filter(creator=creator).prefetch_related('tags')
-#
-#     return render(request, 'creator_profile.html', {
-#         'creator': creator,
-#         'contents': contents
-#     })
-#
-# @login_required
-# def user_profile(request, user_id):
-#     profile_user = request.user
-#
-#     # Для обычных пользователей показываем подписки
-#     subscriptions = None
-#     if profile_user.role == 'user':
-#         subscriptions = profile_user.subscriptions.filter(is_active=True)
-#
-#     # Для создателей показываем контент
-#     contents = None
-#     if profile_user.role == 'creator':
-#         contents = Content.objects.filter(creator=profile_user)
-#
-#     return render(request, 'user_profile.html', {
-#         'profile_user': profile_user,
-#         'subscriptions': subscriptions,
-#         'contents': contents
-#     })
-
-
 @login_required
 def profile(request, user_id):
     """Единый профиль для всех пользователей"""
@@ -133,40 +95,6 @@ def profile_update(request):
         'form': form,
         'success': request.GET.get('success')
     })
-
-# @login_required
-# def creator_profile_update(request, user_id):
-#     if request.user.id != user_id or not request.user.is_creator:
-#         raise PermissionDenied
-#
-#     # Проверяем, является ли пользователь создателем
-#     if not request.user.is_creator:
-#         messages.warning(request, 'Эта страница доступна только создателям контента')
-#         return redirect('home')
-#
-#     if request.method == 'POST':
-#         form = CreatorProfileForm(request.POST, request.FILES, instance=request.user)
-#         if form.is_valid():
-#             form.save()
-#             messages.success(request, 'Профиль успешно обновлен!')
-#             return redirect('profile_update')
-#     else:
-#         form = CreatorProfileForm(instance=request.user)
-#
-#     return redirect('creator_profile', user_id=request.user.id)
-
-# @login_required
-# def user_settings(request):
-#     if request.method == 'POST':
-#         form = UserSettingsForm(request.POST, instance=request.user)
-#         if form.is_valid():
-#             form.save()
-#             messages.success(request, 'Настройки сохранены!')
-#             return redirect('user_settings')
-#     else:
-#         form = UserSettingsForm(instance=request.user)
-#
-#     return render(request, 'settings.html', {'form': form})
 
 
 # def content_list(request):

@@ -61,6 +61,20 @@ class Content(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     is_public = models.BooleanField(default=False)  # Бесплатный контент
 
+    @property
+    def file_type(self):
+        if self.file:
+            extension = self.file.name.split('.')[-1].lower()
+            if extension in ['jpg', 'jpeg', 'png', 'gif', 'webp']:
+                return 'image'
+            elif extension in ['mp4', 'avi', 'mov', 'mkv', 'webm']:
+                return 'video'
+            elif extension in ['pdf', 'doc', 'docx', 'txt']:
+                return 'document'
+            elif extension in ['mp3', 'wav', 'ogg']:
+                return 'audio'
+        return 'other'
+
 class Subscription(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,

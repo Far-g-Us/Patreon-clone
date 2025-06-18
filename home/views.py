@@ -1,8 +1,9 @@
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, render, redirect
-from django.views.generic import DetailView, ListView, CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib import messages
+from .forms import ContentForm
 from .mixins import CreatorRequiredMixin, UserRequiredMixin
 from .models import Content, Subscription, CustomUser
 
@@ -18,12 +19,13 @@ def download_content(request, pk):
 
     return FileResponse(content.file.open(), as_attachment=True)
 
+
 def home(request):
     # Популярные создатели
     featured_creators = CustomUser.objects.filter(role='creator').order_by('-date_joined')[:5]
 
-    # Последний публичный контент
-    latest_content = Content.objects.filter(is_public=True).order_by('-created_at')[:5]
+    # Последние публичные посты
+    latest_posts = Content.objects.filter(is_public=True).order_by('-created_at')[:5]
 
     # Подписки текущего пользователя (только для авторизованных)
     user_subscriptions = None
@@ -45,26 +47,57 @@ def home(request):
 
     return render(request, 'index.html', {
         'featured_creators': featured_creators,
-        'latest_content': latest_content,
+        'latest_posts': latest_posts,
         'user_subscriptions': user_subscriptions,
         'user_contents': user_contents
     })
 
-class ContentDetailView(LoginRequiredMixin, DetailView):
-    model = Content
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        # Проверка доступа
-        user_has_access = (
-                self.object.is_public or
-                self.request.user.subscriptions.filter(
-                    tier=self.object.tier,
-                    is_active=True
-                ).exists()
-        )
-        context['user_has_access'] = user_has_access
-        return context
+def content_detail(request, pk):
+    content = get_object_or_404(Content, pk=pk)
+
+    # Проверка доступа
+    user_has_access = False
+    if request.user.is_authenticated:
+        if content.is_public or content.creator == request.user:
+            user_has_access = True
+        elif request.user.role == 'user':
+            user_has_access = request.user.subscriptions.filter(
+                tier=content.tier,
+                is_active=True
+            ).exists()
+
+    return render(request, 'content_detail.html', {
+        'content': content,
+        'user_has_access': user_has_access
+    })
+
+
+@login_required
+def content_create(request):
+    # Проверяем, что пользователь является создателем
+    if not request.user.is_creator:
+        messages.error(request, "Только создатели контента могут добавлять посты")
+        return redirect('home')
+
+    if request.method == 'POST':
+        form = ContentForm(request.POST, request.FILES, creator=request.user)
+        if form.is_valid():
+            content = form.save(commit=False)
+            content.creator = request.user
+            content.save()
+            messages.success(request, "Пост успешно создан!")
+            return redirect('content_detail', pk=content.pk)
+    else:
+        form = ContentForm(creator=request.user)
+
+    return render(request, 'content_create.html', {'form': form})
+
+
+def creator_list(request):
+    creators = CustomUser.objects.filter(role='creator')
+    return render(request, 'creator_list.html', {'creators': creators})
+
 
 @login_required
 def subscription_list(request):
@@ -80,8 +113,10 @@ def subscription_list(request):
         'subscriptions': subscriptions
     })
 
+
 def about(request):
     return render(request, 'about.html')
+
 
 # # Для создателей контента
 # class ContentCreateView(CreatorRequiredMixin, CreateView):

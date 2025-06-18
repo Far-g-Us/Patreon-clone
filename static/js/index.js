@@ -69,22 +69,3 @@ document.addEventListener('DOMContentLoaded', function() {
 //        });
 //    }
 });
-
-
-// Кнопка "Наверх"
-window.onscroll = function() {scrollFunction()};
-
-function scrollFunction() {
-    const btn = document.getElementById("scrollTopBtn");
-    if (btn) {
-        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-            btn.style.display = "block";
-        } else {
-            btn.style.display = "none";
-        }
-    }
-}
-
-function topFunction() {
-    window.scrollTo({top: 0, behavior: 'smooth'});
-}

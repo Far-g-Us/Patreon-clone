@@ -58,7 +58,7 @@
                         </div>
                     {% endfor %}
                 </div>
-                <a href="{% url 'creator_list' user.id %}" class="btn btn-outline-primary">
+                <a href="{% url 'creator_list' %}" class="btn btn-outline-primary">
                     Посмотреть весь контент
                 </a>
             </div>
@@ -99,30 +99,39 @@
     </div>
 
     <!-- Последний публичный контент -->
+    {% if latest_posts %}
     <div class="card">
         <div class="card-header">
-            <h2>Последний публичный контент</h2>
+            <h2>Последние публичные посты</h2>
         </div>
         <div class="card-body">
             <div class="row">
-                {% for content in latest_content %}
+                {% for post in latest_posts %}
                     <div class="col-md-4 mb-4">
                         <div class="card h-100">
                             <div class="card-body">
-                                <h5 class="card-title">{{ content.title }}</h5>
-                                <p class="card-text">{{ content.description|truncatechars:100 }}</p>
-                                <p class="text-muted">
-                                    Автор: {% if user.is_authenticated %}
-                                    <a href="{% url 'profile' content.creator.id %}">{{ content.creator.username }}</a>
-                                    {% else %}
-                                        <span class="text-muted">Автор (требуется вход)</span>
-                                    {% endif %}
-                                </p>
-                            </div>
-                            <div class="card-footer">
-                                <a href="{% url 'content_detail' content.id %}" class="btn btn-sm btn-outline-primary">
+                                <h5 class="card-title">{{ post.title }}</h5>
+                                <p class="card-text">{{ post.description|truncatechars:100 }}</p>
+<!--                                <p class="text-muted">-->
+<!--                                    Автор: {% if user.is_authenticated %}-->
+<!--                                    <a href="{% url 'profile' post.creator.id %}">{{ post.creator.username }}</a>-->
+<!--                                    {% else %}-->
+<!--                                        <span class="text-muted">Автор (требуется вход)</span>-->
+<!--                                    {% endif %}-->
+<!--                                </p>-->
+                                <a href="{% url 'content_detail' post.id %}" class="btn btn-sm btn-outline-primary">
                                     Подробнее
                                 </a>
+                            </div>
+                            <div class="card-footer">
+                                <small class="text-muted">
+                                    {% if user.is_authenticated %}
+                                        Автор: {{ post.creator.username }} |
+                                    {% else %}
+                                        Автор (требуется вход) |
+                                    {% endif %}
+                                    {{ post.created_at|date:"d.m.Y" }}
+                                </small>
                             </div>
                         </div>
                     </div>
@@ -134,5 +143,6 @@
             </div>
         </div>
     </div>
+    {% endif %}
 </div>
 {% endblock content %}

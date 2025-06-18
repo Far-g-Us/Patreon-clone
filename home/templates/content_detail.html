@@ -1,16 +1,85 @@
 {% extends "base.html" %}
-
+{% load static %}
 {% block content %}
-  <h1>{{ object.title }}</h1>
-  <p>{{ object.description }}</p>
 
-  {% if user_has_access %}
-    <a href="{% url 'download_content' object.pk %}" class="btn btn-primary">
-      Скачать файл ({{ object.file.size|filesizeformat }})
-    </a>
-  {% else %}
-    <div class="alert alert-warning">
-      Требуется подписка на тариф "{{ object.tier.name }}"
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-header">
+            <h1>{{ content.title }}</h1>
+            <div class="text-muted">
+                Автор: <a href="{% url 'profile' user_id=content.creator.id %}">
+                    {{ content.creator.username }}
+                </a>
+                | {{ content.created_at|date:"d.m.Y H:i" }}
+            </div>
+            <div class="text-muted">
+                {% if content.tier %}
+                    Доступно для подписчиков тарифа: <span class="badge bg-primary">{{ content.tier.name }}</span>
+                {% else %}
+                    <span class="badge bg-success">Бесплатный контент</span>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div class="mb-4">
+                {{ content.description|linebreaks }}
+            </div>
+
+            {% if user_has_access %}
+                <div class="content-file mb-4">
+                    <h3>Прикрепленный файл</h3>
+
+                    {% if content.file_type == 'image' %}
+                        <img src="{{ content.file.url }}" class="img-fluid rounded" alt="{{ content.title }}">
+
+                    {% elif content.file_type == 'video' %}
+                        <video controls class="w-100">
+                            <source src="{{ content.file.url }}" type="video/mp4">
+                            Ваш браузер не поддерживает видео.
+                        </video>
+
+                    {% elif content.file_type == 'audio' %}
+                        <audio controls class="w-100">
+                            <source src="{{ content.file.url }}" type="audio/mpeg">
+                            Ваш браузер не поддерживает аудио.
+                        </audio>
+
+                    {% else %}
+                        <div class="alert alert-info">
+                            <a href="{{ content.file.url }}" class="btn btn-primary" download>
+                                <i class="bi bi-download me-2"></i> Скачать файл
+                            </a>
+                            <span class="ms-3">{{ content.file.name|slice:"40:" }}</span>
+                        </div>
+                    {% endif %}
+                </div>
+            {% else %}
+                <div class="alert alert-warning">
+                    <h4>Доступ ограничен</h4>
+                    <p>Для просмотра этого контента вам необходимо:</p>
+                    <ul>
+                        <li>Подписаться на тариф "{{ content.tier.name }}"</li>
+                        <li>Авторизоваться как создатель контента</li>
+                    </ul>
+                    <a href="{% url 'login' %}" class="btn btn-primary">Войти</a>
+                </div>
+            {% endif %}
+        </div>
     </div>
-  {% endif %}
+</div>
+
+
+<!--  <h1>{{ object.title }}</h1>-->
+<!--  <p>{{ object.description }}</p>-->
+
+<!--  {% if user_has_access %}-->
+<!--    <a href="#" class="btn btn-primary">  'download_content' object.pk-->
+<!--      Скачать файл ({{ object.file.size|filesizeformat }})-->
+<!--    </a>-->
+<!--  {% else %}-->
+<!--    <div class="alert alert-warning">-->
+<!--      Требуется подписка на тариф "{{ object.tier.name }}"-->
+<!--    </div>-->
+<!--  {% endif %}-->
 {% endblock %}
