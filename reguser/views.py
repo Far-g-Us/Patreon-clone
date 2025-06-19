@@ -1,12 +1,18 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.views import (
+    PasswordResetView,
+    PasswordResetDoneView,
+    PasswordResetConfirmView,
+    PasswordResetCompleteView
+)
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout  as auth_logout
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods
-from home.models import CustomUser, Content
+from home.models import CustomUser, Content, DownloadHistory
 from .forms import UserRegisterForm, ProfileForm
 
 
@@ -72,10 +78,18 @@ def profile(request, user_id):
         if hasattr(profile_user, 'subscriptions'):
             subscriptions = profile_user.subscriptions.filter(is_active=True)
 
+    # История скачиваний - всегда для текущего пользователя при просмотре своего профиля
+    downloads = None
+    if request.user.id == profile_user.id:
+        downloads = DownloadHistory.objects.filter(
+            user=profile_user
+        ).order_by('-downloaded_at')[:10]  # Последние 10 скачиваний
+
     return render(request, 'profile.html', {
         'profile_user': profile_user,
         'contents': contents,
-        'subscriptions': subscriptions
+        'subscriptions': subscriptions,
+        'downloads': downloads
     })
 
 
@@ -95,6 +109,42 @@ def profile_update(request):
         'form': form,
         'success': request.GET.get('success')
     })
+
+
+class UnifiedPasswordResetView(PasswordResetView):
+    template_name = 'password_reset_unified.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['view_name'] = 'password_reset'
+        return context
+
+
+class UnifiedPasswordResetDoneView(PasswordResetDoneView):
+    template_name = 'password_reset_unified.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['view_name'] = 'password_reset_done'
+        return context
+
+
+class UnifiedPasswordResetConfirmView(PasswordResetConfirmView):
+    template_name = 'password_reset_unified.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['view_name'] = 'password_reset_confirm'
+        return context
+
+
+class UnifiedPasswordResetCompleteView(PasswordResetCompleteView):
+    template_name = 'password_reset_unified.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['view_name'] = 'password_reset_complete'
+        return context
 
 
 # def content_list(request):

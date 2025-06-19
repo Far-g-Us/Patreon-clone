@@ -1,23 +1,49 @@
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
+from django.db import transaction
+from django.db.models import F
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from .forms import ContentForm
 from .mixins import CreatorRequiredMixin, UserRequiredMixin
-from .models import Content, Subscription, CustomUser
+from .models import Content, Subscription, CustomUser, DownloadHistory
+from django.http import FileResponse, Http404
 
 
-# Для скачивания файлов
-from django.http import FileResponse
+def download_content(request, content_id):
+    content = get_object_or_404(Content, id=content_id)
 
-def download_content(request, pk):
-    content = get_object_or_404(Content, pk=pk)
-    # Проверка прав доступа
-    if not content.is_public and not request.user.subscriptions.filter(tier=content.tier).exists():
-        raise PermissionDenied("У вас нет доступа к этому файлу")
+    # Проверка аутентификации
+    if not request.user.is_authenticated:
+        return redirect('login')
 
-    return FileResponse(content.file.open(), as_attachment=True)
+    # Проверка доступа
+    if not content.is_public:
+        # Проверяем активные подписки пользователя
+        if not request.user.subscriptions.filter(tier=content.tier, is_active=True).exists():
+            raise PermissionDenied("У вас нет подписки на необходимый уровень")
+
+    # Используем транзакцию для атомарности
+    with transaction.atomic():
+        # Увеличиваем счетчик скачиваний
+        Content.objects.filter(id=content_id).update(
+            download_count=F('download_count') + 1
+        )
+
+        # Создаем запись в истории скачиваний
+        DownloadHistory.objects.create(
+            user=request.user,
+            content=content
+        )
+
+    # Отправляем файл
+    try:
+        response = FileResponse(content.file.open(), as_attachment=True)
+        response['Content-Length'] = content.file_size
+        return response
+    except FileNotFoundError:
+        raise Http404("Файл не найден")
 
 
 def home(request):

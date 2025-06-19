@@ -10,7 +10,7 @@
                 Автор: <a href="{% url 'profile' user_id=content.creator.id %}">
                     {{ content.creator.username }}
                 </a>
-                | {{ content.created_at|date:"d.m.Y H:i" }}
+                | {{ content.created_at|date:"d.m.y H:i" }}
             </div>
             <div class="text-muted">
                 {% if content.tier %}
@@ -22,13 +22,16 @@
         </div>
 
         <div class="card-body">
+             <div>
+                 <a><img src="{% static 'img/postpic.jpg' %}"></a> <!--{{ content.content_image }}-->
+             </div>
             <div class="mb-4">
-                {{ content.description|linebreaks }}
+                <p>{{ content.description|linebreaks }}</p>
             </div>
 
             {% if user_has_access %}
                 <div class="content-file mb-4">
-                    <h3>Прикрепленный файл</h3>
+                    <h4>Прикрепленный файл</h4>
 
                     {% if content.file_type == 'image' %}
                         <img src="{{ content.file.url }}" class="img-fluid rounded" alt="{{ content.title }}">
@@ -47,10 +50,14 @@
 
                     {% else %}
                         <div class="alert alert-info">
-                            <a href="{{ content.file.url }}" class="btn btn-primary" download>
-                                <i class="bi bi-download me-2"></i> Скачать файл
+                            {% load custom_filters %}
+                            Название: {{ content.file.name|filename }} |
+                            {% if content.file_size %}
+                            {% load custom_filters %}Размер файла: {{ content.file_size|custom_filesizeformat }} |
+                            {% endif %}
+                            <a href="{% url 'download_content' content.id %}" class="btn btn-primary" download>
+                                <span class="icon5"></span>Скачать файл
                             </a>
-                            <span class="ms-3">{{ content.file.name|slice:"40:" }}</span>
                         </div>
                     {% endif %}
                 </div>

@@ -34,36 +34,36 @@
         </div>
     {% endif %}
 
-    <!-- Блок для создателей контента -->
-    {% if user.is_authenticated and user.role == 'creator' and user_contents %}
-        <div class="card mb-5">
-            <div class="card-header">
-                <h2>Ваш последний контент</h2>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    {% for content in user_contents %}
-                        <div class="col-md-4 mb-4">
-                            <div class="card h-100">
-                                <div class="card-body">
-                                    <h5 class="card-title">{{ content.title }}</h5>
-                                    <p class="card-text">{{ content.description|truncatechars:100 }}</p>
-                                </div>
-                                <div class="card-footer">
-                                    <a href="{% url 'content_detail' content.id %}" class="btn btn-sm btn-outline-primary">
-                                        Подробнее
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-                <a href="{% url 'creator_list' %}" class="btn btn-outline-primary">
-                    Посмотреть весь контент
-                </a>
-            </div>
-        </div>
-    {% endif %}
+<!--    &lt;!&ndash; Блок для создателей контента &ndash;&gt;-->
+<!--    {% if user.is_authenticated and user.role == 'creator' and user_contents %}-->
+<!--        <div class="card mb-5">-->
+<!--            <div class="card-header">-->
+<!--                <h2>Ваш последний контент</h2>-->
+<!--            </div>-->
+<!--            <div class="card-body">-->
+<!--                <div class="row">-->
+<!--                    {% for content in user_contents %}-->
+<!--                        <div class="col-md-4 mb-4">-->
+<!--                            <div class="card h-100">-->
+<!--                                <div class="card-body">-->
+<!--                                    <h5 class="card-title">{{ content.title }}</h5>-->
+<!--                                    <p class="card-text">{{ content.description|truncatechars:100 }}</p>-->
+<!--                                </div>-->
+<!--                                <div class="card-footer">-->
+<!--                                    <a href="{% url 'content_detail' content.id %}" class="btn btn-sm btn-outline-primary">-->
+<!--                                        Подробнее-->
+<!--                                    </a>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    {% endfor %}-->
+<!--                </div>-->
+<!--                <a href="{% url 'creator_list' %}" class="btn btn-outline-primary"> &lt;!&ndash;content_list&ndash;&gt;-->
+<!--                    Посмотреть весь контент-->
+<!--                </a>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    {% endif %}-->
 
     <!-- Популярные создатели -->
     <div class="card mb-5">
@@ -94,6 +94,9 @@
                         <p>Популярные создатели не найдены</p>
                     </div>
                 {% endfor %}
+                <a href="{% url 'creator_list' %}" class="btn btn-outline-primary">
+                    Посмотреть всех создателей
+                </a>
             </div>
         </div>
     </div>
@@ -107,9 +110,10 @@
         <div class="card-body">
             <div class="row">
                 {% for post in latest_posts %}
-                    <div class="col-md-4 mb-4">
+                    <div class="col-md-12 mb-12">
                         <div class="card h-100">
                             <div class="card-body">
+                                <a class="card-image"><img src="{% static 'img/postpic.jpg' %}"></a>
                                 <h5 class="card-title">{{ post.title }}</h5>
                                 <p class="card-text">{{ post.description|truncatechars:100 }}</p>
 <!--                                <p class="text-muted">-->
@@ -130,7 +134,7 @@
                                     {% else %}
                                         Автор (требуется вход) |
                                     {% endif %}
-                                    {{ post.created_at|date:"d.m.Y" }}
+                                    {{ post.created_at|date:"d.m.y" }}
                                 </small>
                             </div>
                         </div>

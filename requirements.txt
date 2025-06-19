@@ -1,5 +1,7 @@
 # core
 Django==5.2.3
 Pillow==11.2.1
+django-cleanup==9.0.0
+python-decouple==3.8
 
 #pip==25.1.1

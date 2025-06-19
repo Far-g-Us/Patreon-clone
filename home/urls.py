@@ -7,6 +7,7 @@ urlpatterns = [
     path('about/', views.about, name='about'),
     path('subscription/', views.subscription_list, name='subscription_list'),
     path('create/', views.content_create, name='content_create'),
-    path('<int:pk>/', views.content_detail, name='content_detail'),
+    path('content/<int:pk>/', views.content_detail, name='content_detail'),
     path('creators/', views.creator_list, name='creator_list'),
+    path('download/<int:content_id>/', views.download_content, name='download_content'),
 ]

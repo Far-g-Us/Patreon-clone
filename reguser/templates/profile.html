@@ -101,11 +101,34 @@
 
       <div class="post-column">
         <!-- Контент для создателей -->
-        {% if profile_user.role == 'creator' and contents %}
-            <div class="creator-section mt-5">
-                <h3>Контент создателя</h3>
-                <!-- ... -->
+        {% if user.is_authenticated and profile_user.role == 'creator' and contents %}
+          {% for content in contents %}
+            <div class="post-example">
+              <div class="post-divider">
+                <div class="photo-placehold-post">
+                  <a class="post-img-trim"><img src="{% static 'img/postpic.jpg' %}"></a>
+                </div>
+                <div class="text-placehold-post">
+                  <div class="text-placehold">
+                    <div class="name-post">{{ content.title }}
+                      <div class="date-post">{{ content.created_at|date:"d.m.y" }}</div>
+                    </div>
+                    <div class="description-post">{{ content.description|truncatechars:100 }}</div>
+                    <div class="date-post">
+                      {% if content.file_size %}
+                        {% load custom_filters %}Размер файла: {{ content.file_size|custom_filesizeformat }}
+                      {% endif %}
+                    </div>
+                    <div class="card-footer">
+                      <a href="{% url 'content_detail' content.id %}" class="btn btn-sm btn-outline-primary">
+                        Подробнее
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
+          {% endfor %}
         {% endif %}
 
         <!-- Подписки (только для владельца профиля) -->
@@ -117,13 +140,24 @@
                 </a>
             </div>
 
-            {% if profile_user.role == 'user' and subscriptions %}
-                <div class="user-subscriptions mt-5">
-                    <h3>Мои подписки</h3>
-                    <!-- ... -->
-                </div>
-            {% endif %}
+<!--            {% if profile_user.role == 'user' and subscriptions %}-->
+<!--                <div class="user-subscriptions mt-5">-->
+<!--                    <h3>Мои подписки</h3>-->
+<!--                    &lt;!&ndash; ... &ndash;&gt;-->
+<!--                </div>-->
+<!--            {% endif %}-->
         {% endif %}
+
+        {% if downloads %}
+            <h3>История скачиваний</h3>
+            <h5>Скачано файлов - {{ downloads|length }}</h5>
+            {% for download in downloads %}
+                {{ download.content.title }} - {{ download.downloaded_at|date:"d.m.y H:i" }}
+            {% endfor %}
+        {% else %}
+            <p>История скачиваний отсутствует</p>
+        {% endif %}
+
 <!--        <div class="post-example">-->
 <!--          <div class="post-divider">-->
 <!--            <div class="photo-placehold-post">-->

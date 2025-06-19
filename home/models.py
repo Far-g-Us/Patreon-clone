@@ -2,6 +2,7 @@ from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.urls import reverse
+import os
 
 
 class CustomUser(AbstractUser):
@@ -56,10 +57,18 @@ class Content(models.Model):
     )
     tier = models.ForeignKey(Tier, on_delete=models.SET_NULL, null=True, blank=True)
     title = models.CharField(max_length=200)
+    # content_image = models.ImageField(upload_to='content_image/', blank=True, null=True)
     description = models.TextField()
     file = models.FileField(upload_to='content_files/')  # Основное поле для файлов
+    file_size = models.PositiveIntegerField(
+        blank=True,
+        null=True,
+        editable=False,
+        verbose_name="Размер файла (байты)"
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     is_public = models.BooleanField(default=False)  # Бесплатный контент
+    download_count = models.IntegerField(default=0)
 
     @property
     def file_type(self):
@@ -75,11 +84,24 @@ class Content(models.Model):
                 return 'audio'
         return 'other'
 
+    def save(self, *args, **kwargs):
+        # Автоматически вычисляем размер файла при сохранении
+        if self.file:
+            self.file_size = self.file.size
+
+        # Удаляем старый файл при обновлении
+        if self.pk:
+            old_instance = Content.objects.get(pk=self.pk)
+            if old_instance.file and old_instance.file != self.file:
+                old_instance.file.delete(save=False)
+
+        super().save(*args, **kwargs)
+
 class Subscription(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name='subscriptions'  # Добавьте это!
+        related_name='subscriptions'
     )
     tier = models.ForeignKey(Tier, on_delete=models.CASCADE)
     start_date = models.DateTimeField(auto_now_add=True)
@@ -87,3 +109,25 @@ class Subscription(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.tier.name}"
+
+
+class DownloadHistory(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='download_history'
+    )
+    content = models.ForeignKey(
+        Content,
+        on_delete=models.CASCADE,
+        related_name='download_history'
+    )
+    downloaded_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-downloaded_at']
+        verbose_name = 'История скачивания'
+        verbose_name_plural = 'История скачиваний'
+
+    def __str__(self):
+        return f"{self.user.username} скачал {self.content.title}"
